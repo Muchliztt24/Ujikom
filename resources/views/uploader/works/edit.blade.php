@@ -67,6 +67,40 @@
                     @enderror
                 </div>
 
+                <!-- Genre -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; color: #1e5f4f; font-weight: 600;">
+                        Genre <span style="color: #dc3545;">*</span>
+                    </label>
+                    <div style="padding: 16px; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+                            @php
+                                $genres = \App\Models\Genre::all();
+                                $selectedGenres = old('genre_ids', $work->genres->pluck('id')->toArray());
+                            @endphp
+                            @foreach($genres as $genre)
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 10px; background: {{ in_array($genre->id, $selectedGenres) ? '#e8f5e9' : 'white' }}; border: 1px solid {{ in_array($genre->id, $selectedGenres) ? '#48c9b0' : '#dee2e6' }}; border-radius: 6px; cursor: pointer; transition: all 0.3s;"
+                                       onmouseover="if (!this.querySelector('input').checked) { this.style.borderColor='#48c9b0'; this.style.background='#f0faf8' }"
+                                       onmouseout="if (!this.querySelector('input').checked) { this.style.borderColor='#dee2e6'; this.style.background='white' }">
+                                    <input type="checkbox" 
+                                           name="genre_ids[]" 
+                                           value="{{ $genre->id }}"
+                                           {{ in_array($genre->id, $selectedGenres) ? 'checked' : '' }}
+                                           style="width: 18px; height: 18px; cursor: pointer;"
+                                           onchange="this.closest('label').style.background = this.checked ? '#e8f5e9' : 'white'; this.closest('label').style.borderColor = this.checked ? '#48c9b0' : '#dee2e6';">
+                                    <span style="font-size: 14px; color: #495057;">{{ $genre->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @error('genre_ids')
+                        <small style="color: #dc3545; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</small>
+                    @enderror
+                    <small style="color: #6c757d; font-size: 13px; margin-top: 5px; display: block;">
+                        Genre yang dipilih: <strong>{{ $work->genres->pluck('name')->implode(', ') ?: 'Belum ada' }}</strong>
+                    </small>
+                </div>
+
                 <!-- Cover -->
                 <div style="margin-bottom: 30px;">
                     <label style="display: block; margin-bottom: 8px; color: #1e5f4f; font-weight: 600;">

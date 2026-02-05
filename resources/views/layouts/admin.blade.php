@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,10 +14,35 @@
     <!-- Tailwind CSS v4 - Same as your welcome.blade.php -->
     <style>
         /*! tailwindcss v4.0.7 | MIT License | https://tailwindcss.com */
-        @layer theme{:root,:host{--font-sans:'Instrument Sans',ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--spacing:.25rem}}
-        
-        @layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;line-height:1.5;font-family:var(--font-sans,ui-sans-serif,system-ui,sans-serif)}}
-        
+        @layer theme {
+
+            :root,
+            :host {
+                --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+                --spacing: .25rem
+            }
+        }
+
+        @layer base {
+
+            *,
+            :after,
+            :before,
+            ::backdrop {
+                box-sizing: border-box;
+                border: 0 solid;
+                margin: 0;
+                padding: 0
+            }
+
+            html,
+            :host {
+                -webkit-text-size-adjust: 100%;
+                line-height: 1.5;
+                font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif)
+            }
+        }
+
         /* Custom Admin Styles */
         body {
             font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
@@ -221,22 +247,23 @@
             .navbar-brand {
                 margin-left: 0;
             }
-            
+
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
             }
-            
+
             .sidebar.show {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
@@ -245,23 +272,26 @@
                 <div class="logo">
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <!-- Buku -->
-                        <rect x="20" y="40" width="40" height="50" fill="#1e5f4f" rx="3"/>
-                        <rect x="22" y="42" width="36" height="46" fill="#2d8b73" rx="2"/>
-                        <line x1="40" y1="42" x2="40" y2="88" stroke="#1e5f4f" stroke-width="2"/>
-                        <line x1="25" y1="50" x2="35" y2="50" stroke="#48c9b0" stroke-width="1.5"/>
-                        <line x1="25" y1="56" x2="35" y2="56" stroke="#48c9b0" stroke-width="1.5"/>
-                        <line x1="25" y1="62" x2="35" y2="62" stroke="#48c9b0" stroke-width="1.5"/>
-                        <line x1="45" y1="50" x2="55" y2="50" stroke="#48c9b0" stroke-width="1.5"/>
-                        <line x1="45" y1="56" x2="55" y2="56" stroke="#48c9b0" stroke-width="1.5"/>
-                        <line x1="45" y1="62" x2="55" y2="62" stroke="#48c9b0" stroke-width="1.5"/>
-                        
+                        <rect x="20" y="40" width="40" height="50" fill="#1e5f4f" rx="3" />
+                        <rect x="22" y="42" width="36" height="46" fill="#2d8b73" rx="2" />
+                        <line x1="40" y1="42" x2="40" y2="88" stroke="#1e5f4f"
+                            stroke-width="2" />
+                        <line x1="25" y1="50" x2="35" y2="50" stroke="#48c9b0"
+                            stroke-width="1.5" />
+                        <line x1="25" y1="56" x2="35" y2="56" stroke="#48c9b0"
+                            stroke-width="1.5" />
+                        <line x1="25" y1="62" x2="35" y2="62" stroke="#48c9b0"
+                            stroke-width="1.5" />
+                        <line x1="45" y1="50" x2="55" y2="50" stroke="#48c9b0"
+                            stroke-width="1.5" />
+                        <line x1="45" y1="56" x2="55" y2="56" stroke="#48c9b0"
+                            stroke-width="1.5" />
+                        <line x1="45" y1="62" x2="55" y2="62" stroke="#48c9b0"
+                            stroke-width="1.5" />
+
                         <!-- Huruf N -->
-                        <path d="M 50 15 L 50 70 M 50 15 L 75 55 M 75 25 L 75 70" 
-                              stroke="white" 
-                              stroke-width="6" 
-                              fill="none" 
-                              stroke-linecap="round" 
-                              stroke-linejoin="round"/>
+                        <path d="M 50 15 L 50 70 M 50 15 L 75 55 M 75 25 L 75 70" stroke="white" stroke-width="6"
+                            fill="none" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
                 <span class="brand-name">Nokomi</span>
@@ -282,22 +312,69 @@
         <div class="sidebar-menu">
             <div class="menu-section">
                 <div class="menu-section-title">Menu Utama</div>
+                <a href="{{ url('/') }}" class="menu-item {{ request()->is('/') ? 'active' : '' }}">
+                    <div class="menu-icon">🏠</div>
+                    <span>Halaman Utama</span>
+                </a>
                 <a href="{{ route('home') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <div class="menu-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('works.index') }}" class="menu-item {{ request()->routeIs('works.*') ? 'active' : '' }}">
-                    <div class="menu-icon">📚</div>
-                    <span>Kelola Works</span>
-                </a>
+                @auth
+                    @if (auth()->user()->role?->name === 'uploader')
+                        <a href="{{ route('works.index') }}"
+                            class="menu-item {{ request()->routeIs('works.*') ? 'active' : '' }}">
+                            <div class="menu-icon">📚</div>
+                            <span>Kelola Works</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.users.index') }}"
+                            class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                            <div class="menu-icon">👤</div>
+                            <span>Kelola Pengguna</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.works.pending') }}"
+                            class="menu-item {{ request()->routeIs('admin.works.*') ? 'active' : '' }}">
+                            <div class="menu-icon">🛂</div>
+                            <span>Approval Karya</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.genres.index') }}"
+                            class="menu-item {{ request()->routeIs('admin.genres.*') ? 'active' : '' }}">
+                            <div class="menu-icon">🏷️</div>
+                            <span>Kelola Genre</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.works.index') }}"
+                            class="menu-item {{ request()->routeIs('admin.works.*') ? 'active' : '' }}">
+                            <div class="menu-icon">🛡️</div>
+                            <span>Moderasi Works</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.chapters.index') }}"
+                            class="menu-item {{ request()->routeIs('admin.chapters.*') ? 'active' : '' }}">
+                            <div class="menu-icon">📑</div>
+                            <span>Moderasi Chapter</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->role?->name === 'admin')
+                        <a href="{{ route('admin.chapter-images.index') }}"
+                            class="menu-item {{ request()->routeIs('admin.chapter-images.*') ? 'active' : '' }}">
+                            <div class="menu-icon">🖼️</div>
+                            <span>Moderasi Chapter Image</span>
+                        </a>
+                    @endif
+                @endauth
             </div>
 
             <div class="menu-section">
                 <div class="menu-section-title">Pengaturan</div>
-                <a href="#" class="menu-item">
-                    <div class="menu-icon">👥</div>
-                    <span>Pengguna</span>
-                </a>
                 <a href="#" class="menu-item">
                     <div class="menu-icon">⚙️</div>
                     <span>Konfigurasi</span>
@@ -307,7 +384,7 @@
             <div class="menu-section">
                 <div class="menu-section-title">Lainnya</div>
                 <a href="{{ route('logout') }}" class="menu-item"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <div class="menu-icon">🚪</div>
                     <span>Keluar</span>
                 </a>
@@ -334,4 +411,5 @@
         });
     </script>
 </body>
+
 </html>

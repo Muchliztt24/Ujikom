@@ -21,4 +21,9 @@ class Work extends Model
     {
         return $this->hasMany(Chapter::class)->orderBy('chapter_number');
     }
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class);
+    }
 }

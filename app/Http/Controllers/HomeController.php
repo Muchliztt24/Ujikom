@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Work;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -21,8 +21,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    
+
     public function index()
     {
-        return view('home');
+        $works = Work::with(['user', 'genres', 'chapters'])
+            ->where('status', 'approved')
+            ->latest()
+            ->paginate(12);
+
+        return view('user.home', compact('works'));
     }
 }

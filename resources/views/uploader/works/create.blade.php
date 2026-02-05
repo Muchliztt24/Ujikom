@@ -20,6 +20,7 @@
                            name="title" 
                            class="form-control" 
                            required
+                           value="{{ old('title') }}"
                            style="width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; transition: all 0.3s;"
                            onfocus="this.style.borderColor='#48c9b0'; this.style.boxShadow='0 0 0 3px rgba(72, 201, 176, 0.1)'"
                            onblur="this.style.borderColor='#dee2e6'; this.style.boxShadow='none'"
@@ -40,7 +41,7 @@
                               style="width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; resize: vertical; transition: all 0.3s;"
                               onfocus="this.style.borderColor='#48c9b0'; this.style.boxShadow='0 0 0 3px rgba(72, 201, 176, 0.1)'"
                               onblur="this.style.borderColor='#dee2e6'; this.style.boxShadow='none'"
-                              placeholder="Tuliskan deskripsi singkat tentang karya ini..."></textarea>
+                              placeholder="Tuliskan deskripsi singkat tentang karya ini...">{{ old('description') }}</textarea>
                     @error('description')
                         <small style="color: #dc3545; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</small>
                     @enderror
@@ -58,12 +59,45 @@
                             onfocus="this.style.borderColor='#48c9b0'; this.style.boxShadow='0 0 0 3px rgba(72, 201, 176, 0.1)'"
                             onblur="this.style.borderColor='#dee2e6'; this.style.boxShadow='none'">
                         <option value="">-- Pilih Tipe --</option>
-                        <option value="comic">📚 Comic / Manga</option>
-                        <option value="novel">📖 Novel</option>
+                        <option value="comic" {{ old('type') == 'comic' ? 'selected' : '' }}>📚 Comic / Manga</option>
+                        <option value="novel" {{ old('type') == 'novel' ? 'selected' : '' }}>📖 Novel</option>
                     </select>
                     @error('type')
                         <small style="color: #dc3545; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</small>
                     @enderror
+                </div>
+
+                <!-- Genre -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; color: #1e5f4f; font-weight: 600;">
+                        Genre <span style="color: #dc3545;">*</span>
+                    </label>
+                    <div style="padding: 16px; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+                            @php
+                                $genres = \App\Models\Genre::all();
+                                $oldGenres = old('genre_ids', []);
+                            @endphp
+                            @foreach($genres as $genre)
+                                <label style="display: flex; align-items: center; gap: 8px; padding: 10px; background: white; border: 1px solid #dee2e6; border-radius: 6px; cursor: pointer; transition: all 0.3s;"
+                                       onmouseover="this.style.borderColor='#48c9b0'; this.style.background='#f0faf8'"
+                                       onmouseout="this.style.borderColor='#dee2e6'; this.style.background='white'">
+                                    <input type="checkbox" 
+                                           name="genre_ids[]" 
+                                           value="{{ $genre->id }}"
+                                           {{ in_array($genre->id, $oldGenres) ? 'checked' : '' }}
+                                           style="width: 18px; height: 18px; cursor: pointer;">
+                                    <span style="font-size: 14px; color: #495057;">{{ $genre->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @error('genre_ids')
+                        <small style="color: #dc3545; font-size: 13px; margin-top: 5px; display: block;">{{ $message }}</small>
+                    @enderror
+                    <small style="color: #6c757d; font-size: 13px; margin-top: 5px; display: block;">
+                        Pilih minimal 1 genre yang sesuai dengan karya Anda
+                    </small>
                 </div>
 
                 <!-- Cover -->
