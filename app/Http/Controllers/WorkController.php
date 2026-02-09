@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Work;
+use App\Models\User;
 use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -126,7 +127,8 @@ class WorkController extends Controller
 
         return back()->with('success', 'Karya dikirim ke admin');
     }
-    // Tampilkan semua karya yang sudah approved
+
+    // HALAMAN HOME (WELCOME)
     public function publicIndex()
     {
         $works = Work::with(['genres', 'user'])
@@ -134,21 +136,20 @@ class WorkController extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('works.public.index', compact('works'));
+        return view('welcome', compact('works'));
     }
-    // Detail karya (user view)
+
+    // DETAIL WORK (USER)
     public function publicShow(Work $work)
     {
         abort_if($work->status !== 'approved', 404);
 
-        $work->load([
-            'genres',
-            'user',
-            'chapters' => function ($q) {
-                $q->orderBy('order');
-            },
-        ]);
+        $work->load(['genres', 'user', 'chapters']);
 
         return view('works.public.show', compact('work'));
+    }
+    public function images()
+    {
+        return $this->hasMany(ChapterImage::class)->orderBy('page_number');
     }
 }

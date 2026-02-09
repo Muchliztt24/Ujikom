@@ -283,6 +283,7 @@
         }
 
         /* Dropdown */
+        /* Dropdown */
         .sidebar-dropdown {
             position: relative;
         }
@@ -291,6 +292,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            cursor: pointer;
         }
 
         .dropdown-arrow {
@@ -305,14 +307,40 @@
         .dropdown-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.5s ease-in-out;
             margin-left: 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .dropdown-content.active {
-            max-height: 500px;
+            max-height: 70vh;
+            /* 70% tinggi layar, adaptif */
+            overflow-y: auto;
+            /* scroll vertikal kalau melebihi */
+            padding: 8px 0;
         }
 
+        /* Scrollbar custom (matching tema) */
+        .dropdown-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dropdown-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .dropdown-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .dropdown-content::-webkit-scrollbar-thumb:hover {
+            background: var(--light-green);
+        }
+
+        /* Item */
         .dropdown-item {
             display: flex;
             align-items: center;
@@ -325,7 +353,7 @@
             font-size: 13px;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin: 2px 0;
+            margin: 2px 8px;
         }
 
         .dropdown-item:hover {
@@ -336,6 +364,8 @@
 
         .dropdown-item .sidebar-icon {
             font-size: 16px;
+            min-width: 24px;
+            text-align: center;
         }
 
         /* Overlay */
@@ -595,13 +625,10 @@
 
                 {{-- JIKA SUDAH LOGIN --}}
                 @auth
+                    <a href="{{ route('dashboard') }}" class="nav-link">
+                        <span>📊</span> Dashboard
+                    </a>
                     {{-- Dashboard: Admin & Uploader --}}
-                    @if (in_array(auth()->user()->role?->name, ['admin', 'uploader']))
-                        <a href="{{ route('home') }}" class="nav-link">
-                            <span>📊</span> Dashboard
-                        </a>
-                    @endif
-
                     @if (auth()->user()->role?->name === 'admin')
                         <a href="{{ route('admin.users.index') }}" class="nav-link">
                             <span>👤</span> Manage Users
@@ -661,6 +688,7 @@
             </div>
 
             <!-- Browse -->
+            <!-- Browse Section -->
             <div class="sidebar-section">
                 <div class="sidebar-title">Browse</div>
                 <div class="sidebar-menu">
@@ -672,47 +700,34 @@
                             <span class="dropdown-arrow" id="genreArrow">▼</span>
                         </a>
                         <div class="dropdown-content" id="genreDropdown">
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">⚔️</span>
-                                <span>Action</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">💕</span>
-                                <span>Romance</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">🔮</span>
-                                <span>Fantasy</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">🚀</span>
-                                <span>Sci-Fi</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">👻</span>
-                                <span>Horror</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">😂</span>
-                                <span>Comedy</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">🎭</span>
-                                <span>Drama</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">🔍</span>
-                                <span>Mystery</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <span class="sidebar-icon">🌸</span>
-                                <span>Slice of Life</span>
-                            </a>
+                            <!-- Debug kecil (hapus kalau sudah oke) -->
+                            <div
+                                style="background: rgba(45, 139, 115, 0.15); padding: 8px 12px; margin: 0 8px 8px; border-radius: 6px; font-size: 12px; color: var(--light-green);">
+                                Total genre: {{ $globalGenres->count() ?? 0 }}
+                                (scroll kalau banyak)
+                            </div>
+
+                            @if (isset($globalGenres) && $globalGenres->count() > 0)
+                                @foreach ($globalGenres as $genre)
+                                    <a href="#" class="dropdown-item">
+                                        <span class="sidebar-icon">
+                                            <span class="sidebar-icon">
+                                                {{ genre_icon($genre->name) }}
+                                            </span>
+                                        </span>
+                                        <span>{{ $genre->name }}</span>
+                                    </a>
+                                @endforeach
+                            @else
+                                <div class="dropdown-item"
+                                    style="color: var(--text-secondary); font-size: 12px; padding: 12px 16px;">
+                                    Belum ada genre tersedia
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- History -->
             <div class="sidebar-section">
                 <div class="sidebar-title">Library</div>

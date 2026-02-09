@@ -119,9 +119,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::delete('/chapter-images/{chapterImage}', [AdminChapterImageController::class, 'destroy'])->name('chapter-images.destroy');
     });
 
-Route::get('/explore', [WorkController::class, 'publicIndex'])->name('works.explore');
+Route::get('/', [WorkController::class, 'publicIndex'])->name('home');
 
 Route::get('/works/{work}', [WorkController::class, 'publicShow'])->name('works.public.show');
+
+use App\Http\Controllers\DashboardController;
+
+Route::middleware(['auth'])
+    ->get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
