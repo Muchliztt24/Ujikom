@@ -26,4 +26,14 @@ class Work extends Model
     {
         return $this->belongsToMany(Genre::class);
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function readingHistories()
+    {
+        return $this->hasMany(ReadingHistory::class);
+    }
 }

@@ -9,7 +9,7 @@ class GlobalGenresComposer
 {
     public function compose(View $view)
     {
-        $genres = Genre::all();  // atau Genre::orderBy('name')->get(); kalau mau urut
+        $genres = Genre::orderBy('name')->get();
         $view->with('globalGenres', $genres);
     }
 }

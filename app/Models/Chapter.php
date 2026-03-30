@@ -27,4 +27,14 @@ class Chapter extends Model
     {
         return $this->hasMany(ChapterImage::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
+    public function readingHistories()
+    {
+        return $this->hasMany(ReadingHistory::class);
+    }
 }

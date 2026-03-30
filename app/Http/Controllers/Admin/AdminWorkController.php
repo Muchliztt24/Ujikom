@@ -11,16 +11,27 @@ class AdminWorkController extends Controller
     // LIST SEMUA WORK (pending + approved)
     public function index()
     {
-        $works = Work::with('user')
+        $status = request('status');
+
+        $works = Work::with(['user', 'genres'])
             ->latest()
+            ->when(in_array($status, ['pending', 'approved', 'draft']), function ($query) use ($status) {
+                $query->where('status', $status);
+            })
             ->paginate(15);
 
-        return view('admin.works.index', compact('works'));
+        return view('admin.works.index', compact('works', 'status'));
     }
 
     // DETAIL WORK (buat cek konten)
     public function show(Work $work)
     {
+        $work->load([
+            'user.role',
+            'genres',
+            'chapters' => fn($query) => $query->withCount('images')->orderBy('chapter_number'),
+        ]);
+
         return view('admin.works.show', compact('work'));
     }
 

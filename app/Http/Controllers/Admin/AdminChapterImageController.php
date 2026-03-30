@@ -13,7 +13,7 @@ class AdminChapterImageController extends Controller
     public function index()
     {
         $images = ChapterImage::with('chapter.work')
-            ->latest()
+            ->orderByDesc('id')
             ->paginate(20);
 
         return view('admin.chapter-images.index', compact('images'));
@@ -24,7 +24,7 @@ class AdminChapterImageController extends Controller
      */
     public function show(ChapterImage $chapterImage)
     {
-        $chapterImage->load('chapter.work');
+        $chapterImage->load('chapter.work.user', 'chapter.work.genres', 'chapter.images');
 
         return view('admin.chapter-images.show', compact('chapterImage'));
     }

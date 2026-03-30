@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\{WorkController, ChapterController, ChapterImageController, BookmarkController, CommentController, GenreController};
+use App\Http\Controllers\{WorkController, ChapterController, ChapterImageController, BookmarkController, CommentController, GenreController, ProfileController, PageController};
 
 use App\Http\Controllers\Admin\{WorkApprovalController, UserController, AdminWorkController, AdminChapterController, AdminChapterImageController};
 
@@ -19,6 +19,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/faq', [PageController::class, 'faq'])->name('pages.faq');
+Route::get('/news', [PageController::class, 'news'])->name('pages.news');
+Route::get('/search', [PageController::class, 'search'])->name('pages.search');
+Route::get('/notifications', [PageController::class, 'notifications'])->name('pages.notifications');
+Route::get('/collection', [PageController::class, 'collection'])->name('pages.collection');
+Route::get('/history', [PageController::class, 'history'])->name('pages.history');
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +38,7 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('works', WorkController::class);
+    Route::get('/works/{work}/analytics', [WorkController::class, 'show'])->name('works.show');
     Route::resource('works.chapters', ChapterController::class);
     Route::resource('chapters.images', ChapterImageController::class);
 
@@ -54,6 +61,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/chapters/{chapter}/comments', [CommentController::class, 'store'])->name('comments.store');
 
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 /*
@@ -78,12 +88,6 @@ Route::middleware(['auth', 'role:admin'])
         |--------------------------------------------------------------------------
         */
         Route::get('/works/pending', [WorkApprovalController::class, 'index'])->name('works.pending');
-
-        Route::get('/works/{work}', [WorkApprovalController::class, 'show'])->name('works.show');
-
-        Route::post('/works/{work}/approve', [WorkApprovalController::class, 'approve'])->name('works.approve');
-
-        Route::post('/works/{work}/reject', [WorkApprovalController::class, 'reject'])->name('works.reject');
     });
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
@@ -122,6 +126,8 @@ Route::middleware(['auth', 'role:admin'])
 Route::get('/', [WorkController::class, 'publicIndex'])->name('home');
 
 Route::get('/works/{work}', [WorkController::class, 'publicShow'])->name('works.public.show');
+Route::get('/works/{work}/read', [WorkController::class, 'read'])->name('works.read');
+Route::get('/works/{work}/chapters/{chapter}', [WorkController::class, 'readChapter'])->name('works.chapters.read');
 
 use App\Http\Controllers\DashboardController;
 

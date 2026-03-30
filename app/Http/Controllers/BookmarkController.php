@@ -12,7 +12,7 @@ class BookmarkController extends Controller
     // List bookmark user
     public function index()
     {
-        $bookmarks = Bookmark::with('work')
+        $bookmarks = Bookmark::with(['work.user', 'work.genres', 'work.chapters'])
             ->where('user_id', Auth::id())
             ->get();
 

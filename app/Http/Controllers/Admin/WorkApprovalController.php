@@ -9,7 +9,11 @@ class WorkApprovalController extends Controller
 {
     public function index()
     {
-        $works = Work::with('user', 'genres')->where('status', 'pending')->latest()->get();
+        $works = Work::with('user', 'genres')
+            ->withCount('chapters')
+            ->where('status', 'pending')
+            ->latest()
+            ->get();
 
         return view('admin.approvals.pending', compact('works'));
     }
@@ -33,7 +37,7 @@ class WorkApprovalController extends Controller
     }
     public function show(Work $work)
     {
-        $work->load(['genres', 'chapters.user']);
+        $work->load(['user', 'genres', 'chapters']);
 
         return view('admin.approvals.show', compact('work'));
     }

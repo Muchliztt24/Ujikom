@@ -13,6 +13,7 @@ class AdminChapterController extends Controller
     public function index()
     {
         $chapters = Chapter::with(['work.user'])
+            ->withCount('images')
             ->latest()
             ->paginate(15);
 
@@ -26,6 +27,7 @@ class AdminChapterController extends Controller
     {
         $chapter->load([
             'work.user',
+            'work.genres',
             'images', // untuk komik
         ]);
 

@@ -36,6 +36,21 @@ class User extends Authenticatable
         return $this->hasMany(Work::class);
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function readingHistories()
+    {
+        return $this->hasMany(ReadingHistory::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
