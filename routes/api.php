@@ -7,12 +7,20 @@ use App\Http\Controllers\Api\SocialAuthController;
 use App\Http\Controllers\Api\Uploader\UploaderChapterApiController;
 use App\Http\Controllers\Api\Uploader\UploaderChapterImageApiController;
 use App\Http\Controllers\Api\Uploader\UploaderPortalApiController;
+use App\Http\Controllers\Api\UserContentApiController;
 use App\Http\Controllers\Api\WorkApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/home', [WorkApiController::class, 'home']);
+Route::get('/search', [WorkApiController::class, 'index']);
 Route::get('/genres', [WorkApiController::class, 'genres']);
+Route::get('/faq', [UserContentApiController::class, 'faq']);
+Route::get('/news', [UserContentApiController::class, 'news']);
+Route::get('/collection', [UserContentApiController::class, 'guestCollection']);
+Route::get('/notifications', [UserContentApiController::class, 'guestNotifications']);
+Route::get('/chapters/{chapter}/comments', [UserContentApiController::class, 'chapterComments']);
 
 Route::get('/auth/providers', [SocialAuthController::class, 'providers']);
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('api.auth.social.redirect');
@@ -23,6 +31,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::patch('/me', [AuthController::class, 'updateMe']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/bookmarks', [UserContentApiController::class, 'bookmarks']);
+    Route::post('/works/{work}/bookmark', [UserContentApiController::class, 'storeBookmark']);
+    Route::delete('/works/{work}/bookmark', [UserContentApiController::class, 'destroyBookmark']);
+
+    Route::post('/chapters/{chapter}/comments', [UserContentApiController::class, 'storeComment']);
+    Route::delete('/comments/{comment}', [UserContentApiController::class, 'destroyComment']);
+
+    Route::get('/history', [UserContentApiController::class, 'history']);
+    Route::post('/works/{work}/chapters/{chapter}/progress', [UserContentApiController::class, 'storeProgress']);
+
+    Route::get('/me/notifications', [UserContentApiController::class, 'notifications']);
+    Route::get('/me/collection', [UserContentApiController::class, 'collection']);
 });
 
 Route::get('/works', [WorkApiController::class, 'index']);

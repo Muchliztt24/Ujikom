@@ -42,6 +42,37 @@ class WorkApiController extends Controller
         ]);
     }
 
+    public function home(Request $request): JsonResponse
+    {
+        $selectedGenre = null;
+        $genreId = $request->integer('genre');
+
+        $works = Work::query()
+            ->with(['genres', 'user'])
+            ->withCount('chapters')
+            ->where('status', 'approved')
+            ->when($genreId, function ($query) use ($genreId, &$selectedGenre) {
+                $selectedGenre = Genre::query()->withCount('works')->find($genreId);
+
+                $query->whereHas('genres', function ($genreQuery) use ($genreId) {
+                    $genreQuery->where('genres.id', $genreId);
+                });
+            })
+            ->latest()
+            ->paginate($request->integer('per_page', 12))
+            ->withQueryString();
+
+        $genres = Genre::query()
+            ->withCount('works')
+            ->orderBy('name')
+            ->get();
+
+        return $this->paginatedResponse($works, fn (Work $work) => $this->workPayload($work), [
+            'genres' => $genres->map(fn (Genre $genre) => $this->genrePayload($genre))->values(),
+            'selected_genre' => $selectedGenre ? $this->genrePayload($selectedGenre) : null,
+        ]);
+    }
+
     public function show(Work $work): JsonResponse
     {
         abort_if($work->status !== 'approved', 404);

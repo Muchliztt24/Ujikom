@@ -13,10 +13,17 @@ Accept: application/json
 
 ## Publik
 
+- `GET /api/home`
+- `GET /api/search`
 - `GET /api/genres`
+- `GET /api/faq`
+- `GET /api/news`
+- `GET /api/collection`
+- `GET /api/notifications`
 - `GET /api/works`
 - `GET /api/works/{work}`
 - `GET /api/works/{work}/chapters/{chapter}`
+- `GET /api/chapters/{chapter}/comments`
 
 Filter katalog publik:
 
@@ -29,6 +36,18 @@ Filter katalog publik:
 - `GET /api/me`
 - `PATCH /api/me`
 - `POST /api/logout`
+
+## User Features
+
+- `GET /api/bookmarks`
+- `POST /api/works/{work}/bookmark`
+- `DELETE /api/works/{work}/bookmark`
+- `POST /api/chapters/{chapter}/comments`
+- `DELETE /api/comments/{comment}`
+- `GET /api/history`
+- `POST /api/works/{work}/chapters/{chapter}/progress`
+- `GET /api/me/notifications`
+- `GET /api/me/collection`
 
 ## Admin
 
