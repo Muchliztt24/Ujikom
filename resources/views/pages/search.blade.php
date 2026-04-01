@@ -22,8 +22,8 @@
                     @if ($work->cover)
                         <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover">
                     @else
-                        <div class="work-cover" style="display: flex; align-items: center; justify-content: center; font-size: 56px;">
-                            {{ $work->type === 'novel' ? '📖' : '🎨' }}
+                        <div class="work-cover" style="display: flex; align-items: center; justify-content: center; font-size: 56px; color: white;">
+                            <i class="{{ $work->type === 'novel' ? 'bi bi-book-half' : 'bi bi-palette-fill' }}"></i>
                         </div>
                     @endif
                     <div class="work-info">

@@ -33,7 +33,7 @@
                                     <span style="padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--text-secondary); font-size: 12px; font-weight: 700;">{{ $genre->name }}</span>
                                 @endforeach
                             </div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">{{ $continueChapter ? 'Terakhir di Chapter ' . $continueChapter->chapter_number : 'Belum ada progress tersimpan' }}</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">{{ $continueChapter ? 'Terakhir di Chapter ' . $continueChapter->chapter_number : 'Mulai perjalanan bacamu' }}</div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:10px; min-width: 170px;">
                             <a href="{{ $continueChapter ? route('works.chapters.read', [$bookmark->work, $continueChapter]) : route('works.read', $bookmark->work) }}" style="text-align:center; padding: 12px 14px; border-radius: 12px; text-decoration:none; background: linear-gradient(135deg, var(--primary-green), var(--light-green)); color:white; font-weight:700;">{{ $continueChapter ? 'Lanjutkan' : 'Mulai Baca' }}</a>
@@ -49,7 +49,7 @@
         </div>
     @else
         <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 18px; padding: 40px; text-align: center; color: var(--text-secondary);">
-            Belum ada bookmark yang tersimpan.
+            Karya favoritmu akan muncul di sini.
         </div>
     @endif
 
@@ -61,3 +61,5 @@
         }
     </style>
 @endsection
+
+

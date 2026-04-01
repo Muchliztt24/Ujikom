@@ -1,31 +1,26 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
+
 use App\Models\Genre;
-use App\View\Composers\GlobalGenresComposer;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Discord\DiscordExtendSocialite;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Pakai View::share → langsung inject ke SEMUA view & semua child view
-        $genres = Genre::orderBy('name', 'asc')->get();
-        View::share('globalGenres', $genres);
+        Event::listen(SocialiteWasCalled::class, DiscordExtendSocialite::class.'@handle');
 
-        // Optional: tambah debug kalau mau
-        // View::share('debug_genre_count', $genres->count());
+        $genres = Genre::query()->orderBy('name')->get();
+        View::share('globalGenres', $genres);
     }
 }

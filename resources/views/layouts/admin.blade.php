@@ -34,8 +34,10 @@
                 linear-gradient(160deg, #041018 0%, #081923 42%, #0d2028 100%);
             color: var(--admin-text);
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        .navbar { position: fixed; inset: 0 0 auto 0; height: 70px; background: linear-gradient(135deg, rgba(5, 18, 24, 0.96), rgba(10, 30, 38, 0.94)); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; padding: 0 30px; z-index: 1000; box-shadow: 0 8px 30px rgba(0,0,0,0.28); backdrop-filter: blur(12px); }
+        .navbar { position: fixed; inset: 0 0 auto 0; height: 70px; background: linear-gradient(135deg, rgba(5, 18, 24, 0.96), rgba(10, 30, 38, 0.94)); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; padding: 0 30px; z-index: 1000; box-shadow: 0 8px 30px rgba(0,0,0,0.28); backdrop-filter: blur(12px); gap: 16px; }
+        .nav-menu-toggle { display: none; width: 42px; height: 42px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--admin-text); align-items: center; justify-content: center; cursor: pointer; }
         .navbar-brand { display: flex; align-items: center; gap: 15px; margin-left: 250px; }
         .logo { width: 50px; height: 50px; border-radius: 10px; background: linear-gradient(135deg, #16493f, #3db69b); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
         .brand-name { color: var(--admin-text); font-size: 28px; font-weight: 700; }
@@ -56,6 +58,8 @@
         .account-card span { display: block; font-size: 12px; color: var(--admin-text-soft); margin-top: 4px; }
         .account-actions { display: grid; gap: 8px; margin-top: 14px; }
         .account-action { padding: 10px 12px; border-radius: 10px; background: rgba(0,0,0,0.18); border: 1px solid rgba(255,255,255,0.04); border-left: none; }
+        .sidebar-overlay { position: fixed; inset: 70px 0 0 0; background: rgba(0,0,0,0.55); opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 998; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
         .main-content { margin-left: 250px; margin-top: 70px; padding: 30px; min-height: calc(100vh - 70px); }
         .content-header { background: linear-gradient(180deg, rgba(9, 24, 31, 0.96), rgba(8, 18, 24, 0.92)); border: 1px solid var(--admin-border); padding: 25px; border-radius: 20px; margin-bottom: 25px; box-shadow: var(--admin-shadow); backdrop-filter: blur(10px); }
         .content-header h1 { color: var(--admin-text); font-size: 28px; margin-bottom: 5px; }
@@ -112,12 +116,38 @@
         .admin-stat-note { color: var(--admin-text-soft); font-size: 13px; margin-top: 8px; }
         .admin-list { display: grid; gap: 12px; }
         .admin-list-item { padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        @media (max-width: 768px) { .navbar-brand { margin-left: 0; } .sidebar { display: none; } .main-content { margin-left: 0; } }
+        @media (max-width: 1024px) {
+            .nav-menu-toggle { display: inline-flex; }
+            .navbar { padding: 0 18px; }
+            .navbar-brand { margin-left: 0; }
+            .sidebar { left: -280px; width: min(280px, 86vw); transition: left 0.3s ease; z-index: 999; }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding: 24px 16px; }
+        }
+        @media (max-width: 768px) {
+            .brand-name { font-size: 24px; }
+            .user-link span { display: none; }
+            .content-header, .content-body { padding: 20px; }
+            .content-header h1 { font-size: 24px; }
+            .admin-table th, .admin-table td { padding: 12px; font-size: 13px; }
+        }
+        @media (max-width: 480px) {
+            .navbar { padding: 0 12px; }
+            .logo { width: 42px; height: 42px; }
+            .brand-name { font-size: 21px; }
+            .main-content { padding: 18px 12px; }
+            .content-header, .content-body { padding: 16px; border-radius: 16px; }
+            .admin-btn-row { width: 100%; }
+            .admin-btn-row .admin-btn { flex: 1 1 100%; }
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar">
+        <button type="button" class="nav-menu-toggle" id="adminMenuToggle" aria-label="Buka menu">
+            <i class="bi bi-list"></i>
+        </button>
         <div class="navbar-brand">
             <div class="logo">
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="45" height="45">
@@ -138,7 +168,7 @@
         </div>
     </nav>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="adminSidebar">
         <div class="sidebar-menu">
             <div class="menu-section">
                 <div class="menu-section-title">Utama</div>
@@ -171,7 +201,37 @@
         </div>
     </aside>
 
+    <div class="sidebar-overlay" id="adminSidebarOverlay"></div>
+
     <main class="main-content">@yield('content')</main>
+
+    <script>
+        const adminMenuToggle = document.getElementById('adminMenuToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminSidebarOverlay = document.getElementById('adminSidebarOverlay');
+        const adminSidebarLinks = document.querySelectorAll('#adminSidebar a');
+
+        function closeAdminSidebar() {
+            adminSidebar.classList.remove('active');
+            adminSidebarOverlay.classList.remove('active');
+        }
+
+        function toggleAdminSidebar() {
+            adminSidebar.classList.toggle('active');
+            adminSidebarOverlay.classList.toggle('active');
+        }
+
+        adminMenuToggle?.addEventListener('click', toggleAdminSidebar);
+        adminSidebarOverlay?.addEventListener('click', closeAdminSidebar);
+        adminSidebarLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeAdminSidebar();
+            });
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeAdminSidebar();
+        });
+    </script>
 </body>
 
 </html>

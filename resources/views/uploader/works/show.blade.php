@@ -102,8 +102,12 @@
                     </table>
                 </div>
             @else
-                <div class="admin-empty">Belum ada chapter untuk dianalisis.</div>
+                <div class="admin-empty">Analytics chapter akan tampil setelah katalog terisi.</div>
             @endif
         </div>
     </div>
 @endsection
+
+
+
+

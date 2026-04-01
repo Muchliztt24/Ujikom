@@ -21,7 +21,7 @@
         .navbar-container { max-width: 1400px; height: 100%; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
         .logo-row, .navbar-menu { display: flex; align-items: center; gap: 8px; }
         .logo-row { gap: 20px; }
-        .logo-section { display: flex; align-items: center; gap: 16px; cursor: pointer; }
+        .logo-section { display: flex; align-items: center; gap: 16px; cursor: pointer; min-width: 0; }
         .logo-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary-green), var(--light-green)); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(45,139,115,0.3); }
         .logo-icon svg { width: 40px; height: 40px; }
         .logo-text { font-family: 'Crimson Pro', serif; font-size: 26px; font-weight: 700; color: var(--text-primary); }
@@ -33,6 +33,7 @@
         .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
         .nav-link { padding: 10px 16px; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
         .nav-link:hover, .nav-link.active { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-text { white-space: nowrap; }
         .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-green); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
         .notification-badge { position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; background: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; border: 2px solid var(--bg-main); }
         .sidebar { position: fixed; top: 70px; left: -300px; width: 280px; height: calc(100vh - 70px); background: rgba(26,31,46,0.98); backdrop-filter: blur(10px); border-right: 1px solid var(--border-color); transition: left 0.4s ease; z-index: 999; overflow-y: auto; box-shadow: 4px 0 20px rgba(0,0,0,0.3); }
@@ -77,7 +78,37 @@
         .page-header { margin-bottom: 32px; }
         .page-title { font-family: 'Crimson Pro', serif; font-size: 36px; font-weight: 700; margin-bottom: 8px; }
         .page-subtitle { color: var(--text-secondary); }
-        @media (max-width: 768px) { .navbar-menu .nav-link:not(.auth-link):not(.profile-link) { display: none; } .works-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; } .page-title { font-size: 28px; } }
+        @media (max-width: 1024px) {
+            .navbar-container { padding: 0 18px; }
+            .navbar-menu { gap: 6px; }
+            .nav-link { padding: 10px 12px; }
+            .nav-link .nav-text { display: none; }
+            .profile-link .nav-text { display: inline; }
+        }
+        @media (max-width: 768px) {
+            .navbar-menu .nav-link:not(.auth-link):not(.profile-link) { display: none; }
+            .navbar-container { padding: 0 14px; }
+            .logo-row { gap: 12px; }
+            .logo-section { gap: 12px; }
+            .logo-icon { width: 42px; height: 42px; }
+            .logo-icon svg { width: 34px; height: 34px; }
+            .logo-text { font-size: 22px; }
+            .nav-link { padding: 8px 10px; }
+            .profile-link { padding-right: 0; }
+            .profile-link .nav-text { display: none; }
+            .main-content { padding: 24px 16px; }
+            .works-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+            .page-title { font-size: 28px; }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 20px; }
+            .user-avatar { width: 34px; height: 34px; }
+            .sidebar { width: min(320px, 100vw); left: -100vw; }
+            .main-content { padding: 22px 12px; }
+            .pagination-wrap { align-items: stretch; }
+            .pagination-links { width: 100%; }
+            .pagination-link { flex: 1 1 0; }
+        }
     </style>
 </head>
 
@@ -100,19 +131,19 @@
             </div>
 
             <div class="navbar-menu">
-                <a href="{{ route('pages.faq') }}" class="nav-link {{ request()->routeIs('pages.faq') ? 'active' : '' }}"><i class="bi bi-patch-question"></i> FAQ</a>
-                <a href="{{ route('pages.news') }}" class="nav-link {{ request()->routeIs('pages.news') ? 'active' : '' }}"><i class="bi bi-newspaper"></i> News</a>
-                <a href="{{ route('pages.notifications') }}" class="nav-link {{ request()->routeIs('pages.notifications') ? 'active' : '' }}" style="position: relative;"><i class="bi bi-bell-fill"></i> Notifikasi<span class="notification-badge">!</span></a>
+                <a href="{{ route('pages.faq') }}" class="nav-link {{ request()->routeIs('pages.faq') ? 'active' : '' }}"><i class="bi bi-patch-question"></i><span class="nav-text">FAQ</span></a>
+                <a href="{{ route('pages.news') }}" class="nav-link {{ request()->routeIs('pages.news') ? 'active' : '' }}"><i class="bi bi-newspaper"></i><span class="nav-text">News</span></a>
+                <a href="{{ route('pages.notifications') }}" class="nav-link {{ request()->routeIs('pages.notifications') ? 'active' : '' }}" style="position: relative;"><i class="bi bi-bell-fill"></i><span class="nav-text">Notifikasi</span><span class="notification-badge">!</span></a>
                 @guest
-                    <a href="{{ route('login') }}" class="nav-link auth-link"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-                    <a href="{{ route('register') }}" class="nav-link auth-link"><i class="bi bi-person-plus-fill"></i> Register</a>
+                    <a href="{{ route('login') }}" class="nav-link auth-link"><i class="bi bi-box-arrow-in-right"></i><span class="nav-text">Login</span></a>
+                    <a href="{{ route('register') }}" class="nav-link auth-link"><i class="bi bi-person-plus-fill"></i><span class="nav-text">Register</span></a>
                 @endguest
                 @auth
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"><i class="bi bi-speedometer2"></i><span class="nav-text">Dashboard</span></a>
                     @if (auth()->user()->role?->name === 'uploader')
-                        <a href="{{ route('works.index') }}" class="nav-link {{ request()->routeIs('works.*') ? 'active' : '' }}"><i class="bi bi-collection-fill"></i> Kelola Karya</a>
+                        <a href="{{ route('works.index') }}" class="nav-link {{ request()->routeIs('works.*') ? 'active' : '' }}"><i class="bi bi-collection-fill"></i><span class="nav-text">Kelola Karya</span></a>
                     @endif
-                    <a href="{{ route('profile.edit') }}" class="nav-link profile-link {{ request()->routeIs('profile.*') ? 'active' : '' }}"><div class="user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div><span>Profile</span></a>
+                    <a href="{{ route('profile.edit') }}" class="nav-link profile-link {{ request()->routeIs('profile.*') ? 'active' : '' }}"><div class="user-avatar">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div><span class="nav-text">Profile</span></a>
                 @endauth
             </div>
         </div>
@@ -147,7 +178,7 @@
                                     </a>
                                 @endforeach
                             @else
-                                <div class="dropdown-item">Belum ada genre tersedia</div>
+                                <div class="dropdown-item">Belum ada genre</div>
                             @endif
                         </div>
                     </div>
@@ -187,12 +218,32 @@
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const navbar = document.getElementById('navbar');
-        function toggleSidebar() { menuToggle.classList.toggle('active'); sidebar.classList.toggle('active'); sidebarOverlay.classList.toggle('active'); }
+        const sidebarLinks = document.querySelectorAll('.sidebar a');
+        function closeSidebar() {
+            menuToggle.classList.remove('active');
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        }
+        function toggleSidebar() {
+            menuToggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
         menuToggle.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        sidebarLinks.forEach((link) => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
+        });
         window.addEventListener('scroll', () => { if (window.pageYOffset > 50) { navbar.classList.add('scrolled'); } else { navbar.classList.remove('scrolled'); } });
         function toggleGenreDropdown(event) { event.preventDefault(); document.getElementById('genreDropdown').classList.toggle('active'); document.getElementById('genreArrow').classList.toggle('rotated'); }
     </script>
 </body>
 
 </html>
+
+

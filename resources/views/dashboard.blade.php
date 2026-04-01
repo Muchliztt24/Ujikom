@@ -15,7 +15,7 @@
     <div class="content-header">
         <h1>{{ $role === 'admin' ? 'Dashboard Admin' : 'Dashboard Uploader' }}</h1>
         <p>
-            {{ $role === 'admin' ? 'Ringkasan cepat untuk moderasi dan pengelolaan platform.' : 'Ringkasan karya dan progres upload Anda.' }}
+            {{ $role === 'admin' ? 'Pantau aktivitas platform, karya, dan pengguna dari satu tempat.' : 'Lihat performa karya dan atur aktivitas unggahanmu dengan cepat.' }}
         </p>
     </div>
 
@@ -29,7 +29,7 @@
                 <div class="admin-surface admin-stat-card">
                     <div class="admin-stat-label">Total Karya</div>
                     <div class="admin-stat-value">{{ $totalWorks }}</div>
-                    <div class="admin-stat-note">Approved {{ $approvedWorks }} • Pending {{ $pendingWorks }} • Draft {{ $draftWorks }}</div>
+                    <div class="admin-stat-note">Approved {{ $approvedWorks }} | Pending {{ $pendingWorks }} | Draft {{ $draftWorks }}</div>
                 </div>
                 <div class="admin-surface admin-stat-card">
                     <div class="admin-stat-label">Pengguna</div>
@@ -53,7 +53,7 @@
                     <div class="admin-form-title">Moderasi Cepat</div>
                     <div class="admin-list">
                         <div class="admin-list-item">
-                            <div class="admin-muted">Karya menunggu review</div>
+                            <div class="admin-muted">Perlu perhatian</div>
                             <div style="font-size: 26px; font-weight: 800; margin-top: 6px;">{{ $pendingWorks }}</div>
                         </div>
                         <div class="admin-btn-row">
@@ -88,12 +88,12 @@
                 <div class="admin-surface admin-stat-card">
                     <div class="admin-stat-label">Karya Saya</div>
                     <div class="admin-stat-value">{{ $myWorks->count() }}</div>
-                    <div class="admin-stat-note">Draft {{ $myDraft }} • Pending {{ $myPending }} • Approved {{ $myApproved }}</div>
+                    <div class="admin-stat-note">Draft {{ $myDraft }} | Pending {{ $myPending }} | Approved {{ $myApproved }}</div>
                 </div>
                 <div class="admin-surface admin-stat-card">
                     <div class="admin-stat-label">Siap Dikerjakan</div>
                     <div class="admin-stat-value">{{ $myDraft }}</div>
-                    <div class="admin-stat-note">Karya draft yang masih bisa dilengkapi</div>
+                    <div class="admin-stat-note">Judul yang siap dilanjutkan kapan saja</div>
                 </div>
             </div>
 
@@ -111,10 +111,10 @@
                         @forelse ($myWorks->take(5) as $work)
                             <div class="admin-list-item">
                                 <strong>{{ $work->title }}</strong>
-                                <div class="admin-muted" style="margin-top: 6px;">{{ ucfirst($work->type) }} • {{ ucfirst($work->status) }}</div>
+                                <div class="admin-muted" style="margin-top: 6px;">{{ ucfirst($work->type) }} | {{ ucfirst($work->status) }}</div>
                             </div>
                         @empty
-                            <div class="admin-empty">Belum ada karya. Mulai dari tombol tambah karya.</div>
+                            <div class="admin-empty">Karya terbaru akan muncul di sini.</div>
                         @endforelse
                     </div>
                 </div>
@@ -122,3 +122,8 @@
         @endif
     </div>
 @endsection
+
+
+
+
+

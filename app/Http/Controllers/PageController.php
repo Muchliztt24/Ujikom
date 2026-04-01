@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bookmark;
+use App\Models\Chapter;
+use App\Models\Comment;
+use App\Models\Genre;
 use App\Models\ReadingHistory;
 use App\Models\Work;
 use Illuminate\Http\Request;
@@ -31,9 +35,9 @@ class PageController extends Controller
     public function news()
     {
         $newsItems = [
-            ['title' => 'Reader comic dan novel sudah aktif', 'summary' => 'Sekarang pembaca bisa langsung masuk ke chapter pertama dari halaman detail karya.'],
-            ['title' => 'Profil pengguna sudah bisa diedit', 'summary' => 'Nama, email, dan password sekarang dapat diperbarui lewat menu profil.'],
-            ['title' => 'Menu navigasi dirapikan', 'summary' => 'Menu yang belum tersedia sekarang sudah diberi halaman agar tidak ada tautan kosong.'],
+            ['title' => 'Pilihan bacaan terbaru setiap hari', 'summary' => 'Temukan karya baru, chapter terbaru, dan judul populer langsung dari beranda Nokomi.'],
+            ['title' => 'Ruang baca yang makin nyaman', 'summary' => 'Nikmati tampilan novel dan komik yang dirancang untuk fokus, ringan, dan nyaman di layar mana pun.'],
+            ['title' => 'Akun dan library dalam satu tempat', 'summary' => 'Progress baca, bookmark, dan aktivitas akun tersusun rapi supaya lebih mudah dilanjutkan kapan saja.'],
         ];
 
         return view('pages.news', compact('newsItems'));
@@ -60,30 +64,124 @@ class PageController extends Controller
 
     public function notifications()
     {
-        return view('pages.placeholder', [
-            'title' => 'Notifikasi',
-            'subtitle' => 'Pusat notifikasi akan menampilkan update karya, approval, dan aktivitas akun di sini.',
-            'icon' => '??',
-        ]);
+        $latestReleases = Work::with(['user', 'genres', 'chapters'])
+            ->where('status', 'approved')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $chapterUpdates = collect();
+        $creatorFeed = collect();
+
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            $bookmarkedWorkIds = Bookmark::query()
+                ->where('user_id', $user->id)
+                ->pluck('work_id');
+
+            if ($bookmarkedWorkIds->isNotEmpty()) {
+                $chapterUpdates = Chapter::with(['work.user'])
+                    ->whereIn('work_id', $bookmarkedWorkIds)
+                    ->latest()
+                    ->take(8)
+                    ->get();
+            }
+
+            if (in_array($user->role?->name, ['admin', 'uploader'], true)) {
+                $creatorFeed = Comment::with(['user', 'chapter.work'])
+                    ->whereHas('chapter.work', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    })
+                    ->latest()
+                    ->take(6)
+                    ->get();
+            }
+        }
+
+        return view('pages.notifications', compact('latestReleases', 'chapterUpdates', 'creatorFeed'));
     }
 
     public function collection()
     {
-        return view('pages.placeholder', [
-            'title' => 'Collection',
-            'subtitle' => 'Halaman koleksi disiapkan untuk menampung daftar karya favorit dan karya yang sedang diikuti.',
-            'icon' => '??',
+        $featuredWorks = Work::with(['user', 'genres', 'chapters'])
+            ->where('status', 'approved')
+            ->latest()
+            ->take(12)
+            ->get();
+
+        $highlightGenres = Genre::query()
+            ->withCount('works')
+            ->orderByDesc('works_count')
+            ->take(6)
+            ->get();
+
+        if (! auth()->check()) {
+            $novels = $featuredWorks->where('type', 'novel')->take(6)->values();
+            $comics = $featuredWorks->where('type', 'comic')->take(6)->values();
+
+            return view('pages.collection', [
+                'isGuest' => true,
+                'bookmarkedWorks' => collect(),
+                'recentHistory' => collect(),
+                'recommendedWorks' => $featuredWorks->take(6)->values(),
+                'novels' => $novels,
+                'comics' => $comics,
+                'highlightGenres' => $highlightGenres,
+            ]);
+        }
+
+        $bookmarks = Bookmark::with(['work.genres', 'work.user', 'work.chapters'])
+            ->where('user_id', auth()->id())
+            ->get();
+
+        $bookmarkedWorks = $bookmarks
+            ->pluck('work')
+            ->filter()
+            ->unique('id')
+            ->values();
+
+        $recentHistory = ReadingHistory::with(['work.genres', 'work.user', 'chapter'])
+            ->where('user_id', auth()->id())
+            ->orderByDesc('last_read_at')
+            ->take(6)
+            ->get();
+
+        $preferredGenreIds = $bookmarkedWorks
+            ->flatMap(fn ($work) => $work->genres->pluck('id'))
+            ->unique()
+            ->values();
+
+        $recommendedWorks = Work::with(['user', 'genres', 'chapters'])
+            ->where('status', 'approved')
+            ->when($bookmarkedWorks->isNotEmpty(), fn ($query) => $query->whereNotIn('id', $bookmarkedWorks->pluck('id')))
+            ->when($preferredGenreIds->isNotEmpty(), function ($query) use ($preferredGenreIds) {
+                $query->whereHas('genres', function ($genreQuery) use ($preferredGenreIds) {
+                    $genreQuery->whereIn('genres.id', $preferredGenreIds);
+                });
+            })
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $novels = $bookmarkedWorks->where('type', 'novel')->values();
+        $comics = $bookmarkedWorks->where('type', 'comic')->values();
+
+        return view('pages.collection', [
+            'isGuest' => false,
+            'bookmarkedWorks' => $bookmarkedWorks,
+            'recentHistory' => $recentHistory,
+            'recommendedWorks' => $recommendedWorks,
+            'novels' => $novels,
+            'comics' => $comics,
+            'highlightGenres' => $highlightGenres,
         ]);
     }
 
     public function history()
     {
-        if (!auth()->check()) {
-            return view('pages.placeholder', [
-                'title' => 'Riwayat Baca',
-                'subtitle' => 'Masuk dulu untuk melihat progres dan riwayat baca Anda.',
-                'icon' => '??',
-            ]);
+        if (! auth()->check()) {
+            return redirect()->route('login');
         }
 
         $histories = ReadingHistory::with(['work.user', 'chapter'])

@@ -5,520 +5,457 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Nokomi</title>
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary-green: #2d8b73;
             --dark-green: #1e5f4f;
             --light-green: #48c9b0;
-            --accent-green: #5fd4bd;
             --bg-main: #0f1419;
-            --bg-card: #1a1f2e;
+            --bg-card: rgba(26, 31, 46, 0.94);
+            --bg-input: #111827;
             --bg-hover: #252d3d;
             --text-primary: #e8eaed;
             --text-secondary: #9aa0a6;
-            --border-color: #2d3748;
+            --border-color: rgba(148, 163, 184, 0.18);
             --danger: #ef4444;
         }
-
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-main);
-            color: var(--text-primary);
             min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(72, 201, 176, 0.12), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(45, 139, 115, 0.18), transparent 30%),
+                linear-gradient(160deg, #0b1116 0%, #0f1419 45%, #131b24 100%);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
+            padding: 24px;
         }
-
-        /* Background Animation */
-        body::before {
+        .back-home {
+            position: fixed;
+            top: 22px;
+            left: 22px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .back-home:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-color);
+            color: white;
+        }
+        .auth-shell {
+            width: 100%;
+            max-width: 1060px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(20px);
+        }
+        .auth-brand {
+            padding: 56px 48px;
+            background:
+                linear-gradient(180deg, rgba(18, 72, 61, 0.9), rgba(13, 44, 38, 0.94)),
+                linear-gradient(135deg, var(--primary-green), var(--light-green));
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 36px;
+        }
+        .auth-brand::after {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 50%, rgba(45, 139, 115, 0.1), transparent 50%),
-                        radial-gradient(circle at 70% 50%, rgba(72, 201, 176, 0.1), transparent 50%);
-            animation: rotate 20s linear infinite;
+            inset: auto -120px -120px auto;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2), transparent 70%);
+            border-radius: 50%;
         }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .brand-top { position: relative; z-index: 1; }
+        .brand-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
         }
-
-        /* Container */
-        .auth-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 450px;
-            background: rgba(26, 31, 46, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 48px 40px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.6s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Logo */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
-            border-radius: 20px;
+        .brand-logo {
+            width: 76px;
+            height: 76px;
+            border-radius: 22px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(45, 139, 115, 0.4);
-            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
         }
-
-        .logo-icon svg {
-            width: 60px;
-            height: 60px;
-        }
-
-        .logo-text {
+        .brand-logo svg { width: 56px; height: 56px; }
+        .brand-name {
             font-family: 'Crimson Pro', serif;
-            font-size: 36px;
+            font-size: 40px;
             font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
         }
-
-        .logo-subtitle {
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-
-        /* Form Title */
-        .form-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .form-subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        /* Form Group */
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: block;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 15px;
-            transition: all 0.3s ease;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(45, 139, 115, 0.1);
-        }
-
-        .form-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Password Toggle */
-        .password-group {
-            position: relative;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .password-toggle:hover {
-            color: var(--light-green);
-        }
-
-        /* Remember & Forgot */
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-
-        .checkbox-label {
-            display: flex;
+        .brand-tag {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.12);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .brand-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 44px;
+            line-height: 1.04;
+            margin-bottom: 14px;
+            max-width: 420px;
+        }
+        .brand-copy {
+            max-width: 430px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 15px;
+            line-height: 1.75;
+        }
+        .brand-points {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 12px;
+        }
+        .brand-point {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(7, 20, 17, 0.18);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .brand-point i { font-size: 18px; }
+        .auth-card {
+            background: var(--bg-card);
+            padding: 52px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .auth-card h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+        .auth-card p {
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+        .alert-error {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fecaca;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+        .field { margin-bottom: 18px; }
+        .field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .input-wrap { position: relative; }
+        .input-wrap i.leading {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        .form-input {
+            width: 100%;
+            padding: 15px 16px 15px 46px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font: inherit;
+            transition: all 0.3s ease;
+        }
+        .form-input.password { padding-right: 48px; }
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(72, 201, 176, 0.5);
+            box-shadow: 0 0 0 4px rgba(72, 201, 176, 0.08);
+        }
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 14px;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
             color: var(--text-secondary);
             cursor: pointer;
         }
-
-        .checkbox-label input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
+        .error-text {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            color: #fca5a5;
+            font-size: 12px;
+            margin-top: 8px;
         }
-
-        .forgot-link {
+        .field-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 22px;
+            font-size: 14px;
+        }
+        .remember-me {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+        .forgot-link, .switch-link a {
             color: var(--light-green);
             text-decoration: none;
-            transition: all 0.3s ease;
+            font-weight: 600;
         }
-
-        .forgot-link:hover {
-            color: var(--accent-green);
-            text-decoration: underline;
-        }
-
-        /* Submit Button */
         .submit-btn {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
-            color: white;
+            padding: 15px 18px;
+            border-radius: 14px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(45, 139, 115, 0.3);
+            font: inherit;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            box-shadow: 0 12px 28px rgba(45, 139, 115, 0.28);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(45, 139, 115, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 16px 32px rgba(45, 139, 115, 0.34);
         }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Divider */
         .divider {
             display: flex;
             align-items: center;
-            margin: 32px 0;
+            gap: 14px;
+            margin: 24px 0 20px;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
-
-        .divider::before,
-        .divider::after {
+        .divider::before, .divider::after {
             content: '';
-            flex: 1;
             height: 1px;
+            flex: 1;
             background: var(--border-color);
         }
-
-        .divider span {
-            padding: 0 16px;
-        }
-
-        /* Social Login */
-        .social-login {
+        .social-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
-
         .social-btn {
-            padding: 12px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            padding: 13px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s ease;
         }
-
         .social-btn:hover {
             background: var(--bg-hover);
-            border-color: var(--primary-green);
+            border-color: rgba(72, 201, 176, 0.45);
         }
-
-        /* Register Link */
-        .register-link {
+        .social-btn.google i { color: #fbbc05; }
+        .social-btn.facebook i { color: #60a5fa; }
+        .social-btn.x i { color: #e5e7eb; }
+        .social-btn.discord i { color: #a5b4fc; }
+        .social-btn.github i { color: #cbd5e1; }
+        .switch-link {
             text-align: center;
             color: var(--text-secondary);
             font-size: 14px;
         }
-
-        .register-link a {
-            color: var(--light-green);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+        @media (max-width: 900px) {
+            .auth-shell { grid-template-columns: 1fr; }
+            .auth-brand { padding: 36px 28px; }
+            .auth-card { padding: 38px 26px; }
         }
-
-        .register-link a:hover {
-            color: var(--accent-green);
-            text-decoration: underline;
+        @media (max-width: 560px) {
+            .social-grid { grid-template-columns: 1fr; }
+            .brand-title { font-size: 34px; }
+            .auth-card h1 { font-size: 30px; }
+            .back-home { position: static; margin-bottom: 18px; }
+            body { display: block; padding: 16px; }
+            .auth-shell { margin: 0 auto; }
+            .auth-brand { padding: 28px 22px; }
+            .auth-card { padding: 30px 20px; }
         }
-
-        /* Error Message */
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--danger);
-            border-radius: 10px;
-            padding: 12px 16px;
-            color: #ff6b6b;
-            font-size: 14px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Back to Home */
-        .back-home {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            z-index: 2;
-        }
-
-        .back-home:hover {
-            background: rgba(26, 31, 46, 0.8);
-            color: var(--light-green);
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .auth-container {
-                padding: 32px 24px;
-            }
-
-            .logo-text {
-                font-size: 32px;
-            }
-
-            .form-title {
-                font-size: 24px;
-            }
+        @media (max-width: 420px) {
+            .brand-logo { width: 62px; height: 62px; }
+            .brand-logo svg { width: 46px; height: 46px; }
+            .brand-name { font-size: 32px; }
+            .brand-title { font-size: 30px; }
+            .field-row { flex-direction: column; align-items: flex-start; }
+            .social-btn { font-size: 13px; padding: 12px; }
         }
     </style>
 </head>
 <body>
-    <!-- Back to Home -->
     @if (Route::has('home'))
         <a href="{{ route('home') }}" class="back-home">
-            <span>←</span> Kembali
+            <i class="bi bi-arrow-left"></i>
+            <span>Kembali</span>
         </a>
     @endif
 
-    <div class="auth-container">
-        <!-- Logo -->
-        <div class="logo-container">
-            <div class="logo-icon">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Buku -->
-                    <rect x="20" y="35" width="40" height="55" fill="rgba(255,255,255,0.2)" rx="3"/>
-                    <rect x="22" y="37" width="36" height="51" fill="rgba(255,255,255,0.3)" rx="2"/>
-                    <line x1="40" y1="37" x2="40" y2="88" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
-                    
-                    <!-- Huruf N -->
-                    <path d="M 50 15 L 50 70 M 50 15 L 75 55 M 75 25 L 75 70" 
-                          stroke="white" 
-                          stroke-width="7" 
-                          fill="none" 
-                          stroke-linecap="round" 
-                          stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <div class="logo-text">Nokomi</div>
-            <div class="logo-subtitle">Baca Novel & Comic Online</div>
-        </div>
-
-        <!-- Form Title -->
-        <h1 class="form-title">Selamat Datang!</h1>
-        <p class="form-subtitle">Masuk untuk melanjutkan membaca</p>
-
-        <!-- Error Messages -->
-        @error('email')
-            <div class="error-message">
-                <span>⚠️</span>
-                <span>{{ $message }}</span>
-            </div>
-        @enderror
-        @error('password')
-            <div class="error-message">
-                <span>⚠️</span>
-                <span>{{ $message }}</span>
-            </div>
-        @enderror
-
-        <!-- Login Form -->
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <!-- Email -->
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" 
-                       name="email" 
-                       class="form-input @error('email') error @enderror" 
-                       placeholder="nama@email.com"
-                       value="{{ old('email') }}"
-                       required 
-                       autocomplete="email"
-                       autofocus>
-                @error('email')
-                    <span class="error-text">⚠️ {{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Password -->
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="password-group">
-                    <input type="password" 
-                           name="password" 
-                           class="form-input @error('password') error @enderror" 
-                           id="password"
-                           placeholder="Masukkan password"
-                           required
-                           autocomplete="current-password">
-                    <button type="button" class="password-toggle" onclick="togglePassword()">
-                        <span id="toggleIcon">👁️</span>
-                    </button>
+    <div class="auth-shell">
+        <section class="auth-brand">
+            <div class="brand-top">
+                <div class="brand-logo-row">
+                    <div class="brand-logo">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="35" width="40" height="55" fill="rgba(255,255,255,0.18)" rx="3" />
+                            <rect x="22" y="37" width="36" height="51" fill="rgba(255,255,255,0.28)" rx="2" />
+                            <line x1="40" y1="37" x2="40" y2="88" stroke="rgba(255,255,255,0.45)" stroke-width="2" />
+                            <path d="M 50 15 L 50 70 M 50 15 L 75 55 M 75 25 L 75 70" stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="brand-name">Nokomi</div>
                 </div>
-                @error('password')
-                    <span class="error-text">⚠️ {{ $message }}</span>
-                @enderror
+                <div class="brand-tag"><i class="bi bi-stars"></i> Reader Hub</div>
+                <div class="brand-title">Masuk dan lanjutkan dunia cerita favoritmu.</div>
+                <div class="brand-copy">Simpan progres baca, bookmark favorit, dan lanjutkan cerita kapan saja dari akun yang sama.</div>
             </div>
 
-            <!-- Remember & Forgot -->
-            <div class="form-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <span>Ingat saya</span>
-                </label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="forgot-link">Lupa password?</a>
-                @endif
+            <div class="brand-points">
+                <div class="brand-point"><i class="bi bi-book-half"></i><span>Progress baca tersimpan otomatis untuk novel dan komik.</span></div>
+                <div class="brand-point"><i class="bi bi-chat-dots"></i><span>Komentar chapter dan riwayat baca tetap terhubung ke akunmu.</span></div>
+                <div class="brand-point"><i class="bi bi-shield-check"></i><span>Akses akun yang aman dan praktis di web maupun mobile.</span></div>
+            </div>
+        </section>
+
+        <section class="auth-card">
+            <h1>Masuk ke akun</h1>
+            <p>Gunakan email dan password, atau pilih salah satu akun sosial yang tersedia.</p>
+
+            @if ($errors->any())
+                <div class="alert-error">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="field">
+                    <label for="email">Email</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-envelope leading"></i>
+                        <input id="email" type="email" name="email" class="form-input" value="{{ old('email') }}" placeholder="nama@email.com" required autocomplete="email" autofocus>
+                    </div>
+                    @error('email')
+                        <div class="error-text"><i class="bi bi-exclamation-circle"></i><span>{{ $message }}</span></div>
+                    @enderror
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-lock leading"></i>
+                        <input id="password" type="password" name="password" class="form-input password" placeholder="Masukkan password" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', 'passwordIcon')">
+                            <i id="passwordIcon" class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                        <div class="error-text"><i class="bi bi-exclamation-circle"></i><span>{{ $message }}</span></div>
+                    @enderror
+                </div>
+
+                <div class="field-row">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <span>Ingat saya</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="forgot-link">Lupa password?</a>
+                    @endif
+                </div>
+
+                <button type="submit" class="submit-btn">Masuk</button>
+            </form>
+
+            <div class="divider">atau masuk dengan</div>
+
+            <div class="social-grid">
+                <a href="{{ route('api.auth.social.redirect', 'google') }}" class="social-btn google"><i class="bi bi-google"></i><span>Google</span></a>
+                <a href="{{ route('api.auth.social.redirect', 'facebook') }}" class="social-btn facebook"><i class="bi bi-facebook"></i><span>Facebook</span></a>
+                <a href="{{ route('api.auth.social.redirect', 'x') }}" class="social-btn x"><i class="bi bi-twitter-x"></i><span>X</span></a>
+                <a href="{{ route('api.auth.social.redirect', 'discord') }}" class="social-btn discord"><i class="bi bi-discord"></i><span>Discord</span></a>
+                <a href="{{ route('api.auth.social.redirect', 'github') }}" class="social-btn github" style="grid-column: 1 / -1;"><i class="bi bi-github"></i><span>GitHub</span></a>
             </div>
 
-            <!-- Submit -->
-            <button type="submit" class="submit-btn">
-                Masuk
-            </button>
-        </form>
-
-        <!-- Divider -->
-        <div class="divider">
-            <span>atau masuk dengan</span>
-        </div>
-
-        <!-- Social Login -->
-        <div class="social-login">
-            <button class="social-btn">
-                <span>🔵</span> Google
-            </button>
-            <button class="social-btn">
-                <span>⚫</span> GitHub
-            </button>
-        </div>
-
-        <!-- Register Link -->
-        @if (Route::has('register'))
-            <div class="register-link">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a>
-            </div>
-        @endif
+            @if (Route::has('register'))
+                <div class="switch-link">Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></div>
+            @endif
+        </section>
     </div>
 
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('toggleIcon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.textContent = '👁️‍🗨️';
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
-            }
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
         }
     </script>
 </body>

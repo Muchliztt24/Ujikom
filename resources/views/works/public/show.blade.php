@@ -141,7 +141,7 @@
                         @empty
                             <div style="text-align: center; padding: 60px 20px; background: var(--bg-main); border-radius: 12px; border: 1px dashed var(--border-color);">
                                 <div style="font-size: 48px; margin-bottom: 12px;"><i class="bi bi-journal-x"></i></div>
-                                <div style="color: var(--text-secondary); font-size: 15px;">Belum ada chapter tersedia</div>
+                                <div style="color: var(--text-secondary); font-size: 15px;">Daftar chapter belum tersedia</div>
                             </div>
                         @endforelse
                     </div>
@@ -174,7 +174,7 @@
             @empty
                 <div style="padding: 32px 20px; text-align:center; border-radius: 16px; background: var(--bg-main); border: 1px dashed var(--border-color); color: var(--text-secondary);">
                     <div style="font-size: 42px; margin-bottom: 10px;"><i class="bi bi-chat-square-text"></i></div>
-                    Belum ada komentar untuk karya ini.
+                    Komentar pembaca akan tampil di bagian ini.
                 </div>
             @endforelse
         </div>
@@ -209,3 +209,7 @@
         }
     </script>
 @endsection
+
+
+
+

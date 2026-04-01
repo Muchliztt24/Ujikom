@@ -8,8 +8,9 @@
 
     <div class="content-body">
         <a href="{{ route('admin.chapter-images.index') }}"
-            style="display: inline-block; margin-bottom: 18px; text-decoration: none; color: #2d8b73; font-weight: 700;">
-            ? Kembali
+            style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; text-decoration: none; color: var(--admin-accent); font-weight: 700;">
+            <i class="bi bi-arrow-left"></i>
+            <span>Kembali</span>
         </a>
 
         <div style="display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px;">
@@ -73,3 +74,4 @@
         }
     </style>
 @endsection
+

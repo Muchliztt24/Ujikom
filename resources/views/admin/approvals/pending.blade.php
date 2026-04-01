@@ -3,7 +3,7 @@
 @section('content')
     <div class="content-header">
         <h1>Approval Karya</h1>
-        <p>Review karya yang masih menunggu persetujuan.</p>
+        <p>Kelola daftar karya yang siap ditinjau.</p>
     </div>
 
     <div class="content-body admin-card-grid">
@@ -21,7 +21,7 @@
                             <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" style="width:100%; height:240px; object-fit:cover;">
                         @else
                             <div style="height:240px; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.04); color: var(--admin-text-soft); font-size:52px;">
-                                {{ $work->type === 'comic' ? '??' : '??' }}
+                                <i class="{{ $work->type === 'comic' ? 'bi bi-palette-fill' : 'bi bi-book-half' }}"></i>
                             </div>
                         @endif
                         <div style="padding:18px; display:grid; gap:12px; flex:1;">
@@ -38,7 +38,7 @@
                                     @endforeach
                                 </div>
                             @endif
-                            <div class="admin-help">{{ \Illuminate\Support\Str::limit($work->description ?: 'Belum ada deskripsi.', 140) }}</div>
+                            <div class="admin-help">{{ \Illuminate\Support\Str::limit($work->description ?: 'Tanpa ringkasan tambahan.', 140) }}</div>
                             <div class="admin-btn-row" style="margin-top:auto;">
                                 <a href="{{ route('admin.works.show', $work) }}" class="admin-btn info">Lihat Detail</a>
                                 <form action="{{ route('admin.works.approve', $work) }}" method="POST">@csrf<button type="submit" class="admin-btn success" onclick="return confirm('Setujui karya ini?')">Setujui</button></form>
@@ -53,3 +53,7 @@
         @endif
     </div>
 @endsection
+
+
+
+

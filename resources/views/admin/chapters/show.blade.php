@@ -3,7 +3,7 @@
 @section('content')
     <div class="content-header">
         <h1>Detail Chapter</h1>
-        <p>Review chapter novel atau komik dengan tampilan admin yang lebih sederhana.</p>
+        <p>Lihat isi chapter, halaman komik, dan informasi karya dalam satu tampilan.</p>
     </div>
 
     <div class="content-body">
@@ -14,8 +14,9 @@
         @endif
 
         <a href="{{ route('admin.chapters.index') }}"
-            style="display: inline-block; margin-bottom: 18px; text-decoration: none; color: #2d8b73; font-weight: 700;">
-            ? Kembali ke daftar chapter
+            style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; text-decoration: none; color: var(--admin-accent); font-weight: 700;">
+            <i class="bi bi-arrow-left"></i>
+            <span>Kembali ke daftar chapter</span>
         </a>
 
         <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start;">
@@ -55,7 +56,7 @@
                             </div>
                         @else
                             <div style="padding: 18px; background: #f8f9fa; border-radius: 10px; color: #6c757d;">
-                                Chapter novel ini belum memiliki isi teks.
+                                Teks chapter akan tampil di area ini.
                             </div>
                         @endif
                     @else
@@ -81,7 +82,7 @@
                             </div>
                         @else
                             <div style="padding: 18px; background: #f8f9fa; border-radius: 10px; color: #6c757d;">
-                                Chapter komik ini belum memiliki gambar.
+                                Halaman komik akan tampil di area ini.
                             </div>
                         @endif
                     @endif
@@ -141,3 +142,5 @@
         }
     </style>
 @endsection
+
+

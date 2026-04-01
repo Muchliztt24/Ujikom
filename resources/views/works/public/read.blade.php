@@ -1,4 +1,4 @@
-@extends('layouts.user')
+﻿@extends('layouts.user')
 
 @section('content')
     <div style="display: flex; flex-direction: column; gap: 24px;">
@@ -6,7 +6,7 @@
             <div id="readerProgressBar" style="width: 0%; height: 100%; background: linear-gradient(135deg, var(--primary-green), var(--light-green));"></div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div class="reader-top" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
             <div>
                 <a href="{{ route('works.public.show', $work) }}" style="display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); text-decoration: none; margin-bottom: 10px;">
                     <span>&larr;</span> Kembali ke Detail
@@ -14,12 +14,12 @@
                 <div style="font-size: 13px; color: var(--light-green); font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">{{ $work->type === 'comic' ? 'Comic Reader' : 'Novel Reader' }}</div>
                 <h1 style="font-family: 'Crimson Pro', serif; font-size: 38px; line-height: 1.2; margin: 6px 0 8px;">{{ $work->title }}</h1>
                 <div style="color: var(--text-secondary); font-size: 15px; display:flex; gap: 8px; flex-wrap: wrap; align-items:center;">
-                    <span>Chapter {{ $chapter->chapter_number }}@if($chapter->title) � {{ $chapter->title }} @endif</span>
+                    <span>Chapter {{ $chapter->chapter_number }}@if($chapter->title) • {{ $chapter->title }} @endif</span>
                     <span style="padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,0.05);">Estimasi {{ $estimatedReadMinutes }} menit</span>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <div class="reader-nav" style="display: flex; gap: 8px; flex-wrap: wrap;">
                 @if($previousChapter)
                     <a href="{{ route('works.chapters.read', [$work, $previousChapter]) }}" style="padding: 9px 13px; background: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 9px; text-decoration: none; font-weight: 600; font-size: 13px; line-height: 1.2;">&larr; Chapter Sebelumnya</a>
                 @endif
@@ -30,7 +30,7 @@
         </div>
 
         @if($work->type === 'novel')
-            <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items:center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 16px;">
+            <div class="reader-toolbar" style="display:flex; gap: 10px; flex-wrap: wrap; align-items:center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 16px;">
                 <span style="font-size: 13px; color: var(--text-secondary); font-weight: 700;">Mode Baca</span>
                 <button type="button" class="reader-theme-btn" data-theme="light" style="padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); background: #f8f5ef; color: #1f2937; cursor: pointer;">Light</button>
                 <button type="button" class="reader-theme-btn" data-theme="sepia" style="padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); background: #f4ecd8; color: #5b4636; cursor: pointer;">Sepia</button>
@@ -40,7 +40,7 @@
             </div>
         @endif
 
-        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start;">
+        <div class="reader-layout" style="display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start;">
             <div style="display:grid; gap: 24px;">
                 @if($work->type === 'comic')
                     <div id="comicReader" style="background: #0b0f14; border: 1px solid var(--border-color); border-radius: 20px; padding: 20px;">
@@ -51,7 +51,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <div style="padding: 60px 24px; text-align: center; color: var(--text-secondary);">Belum ada gambar untuk chapter ini.</div>
+                            <div style="padding: 60px 24px; text-align: center; color: var(--text-secondary);">Belum ada halaman untuk chapter ini.</div>
                         @endif
                     </div>
                 @else
@@ -61,7 +61,7 @@
                             @if(filled($chapter->text_content))
                                 <div id="novelContent" style="font-family: 'Crimson Pro', serif; font-size: 22px; line-height: 1.9; white-space: pre-line;">{{ $chapter->text_content }}</div>
                             @else
-                                <div style="padding: 32px 24px; background: rgba(17,24,39,0.06); border-radius: 14px; color: #4b5563;">Isi chapter novel ini belum tersedia.</div>
+                                <div style="padding: 32px 24px; background: rgba(17,24,39,0.06); border-radius: 14px; color: #4b5563;">Chapter ini belum memiliki isi.</div>
                             @endif
                         </div>
                     </article>
@@ -113,7 +113,7 @@
                 </section>
             </div>
 
-            <aside style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 20px; position: sticky; top: 90px;">
+            <aside class="reader-sidebar" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 20px; position: sticky; top: 90px;">
                 <div style="font-size: 12px; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">Daftar Chapter</div>
                 <div style="font-size: 18px; font-weight: 700; margin-bottom: 16px;">{{ $chapters->count() }} Chapter</div>
 
@@ -133,11 +133,17 @@
 
     <style>
         @media (max-width: 1024px) {
-            div[style*="grid-template-columns: minmax(0, 1fr) 300px"] { grid-template-columns: 1fr !important; }
-            aside[style*="position: sticky"] { position: relative !important; top: 0 !important; }
+            .reader-layout { grid-template-columns: 1fr !important; }
+            .reader-sidebar { position: relative !important; top: 0 !important; }
+            .reader-sidebar > div[style*="max-height: 70vh"] { max-height: 320px !important; }
         }
 
         @media (max-width: 640px) {
+            .reader-top { align-items: flex-start !important; }
+            .reader-nav { width: 100%; }
+            .reader-nav a { flex: 1 1 100%; text-align: center; }
+            .reader-toolbar { padding: 12px !important; }
+            .reader-toolbar button { flex: 1 1 calc(33.333% - 10px); }
             h1 { font-size: 30px !important; }
             article[style*="padding: 40px 32px"] { padding: 28px 20px !important; }
         }
@@ -208,3 +214,8 @@
         applyReaderSettings();
     </script>
 @endsection
+
+
+
+
+

@@ -68,8 +68,12 @@
             </div>
         @else
             <div class="admin-empty">
-                Belum ada gambar chapter.
+                Belum ada gambar di chapter ini.
             </div>
         @endif
     </div>
 @endsection
+
+
+
+

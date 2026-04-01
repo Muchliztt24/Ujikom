@@ -1,4 +1,4 @@
-@extends('layouts.user')
+﻿@extends('layouts.user')
 
 @section('content')
     <div class="page-header">
@@ -9,7 +9,7 @@
     @if ($histories->count())
         <div style="display: grid; gap: 18px;">
             @foreach ($histories as $history)
-                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 18px; display: grid; grid-template-columns: 88px 1fr auto; gap: 18px; align-items: center;">
+                <div class="history-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px; padding: 18px; display: grid; grid-template-columns: 88px 1fr auto; gap: 18px; align-items: center;">
                     <div>
                         @if ($history->work?->cover)
                             <img src="{{ asset('storage/' . $history->work->cover) }}" alt="{{ $history->work->title }}" style="width: 88px; height: 118px; object-fit: cover; border-radius: 12px; display: block;">
@@ -25,7 +25,7 @@
                         <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;">
                             Chapter {{ $history->chapter?->chapter_number }}
                             @if ($history->chapter?->title)
-                                � {{ $history->chapter->title }}
+                                • {{ $history->chapter->title }}
                             @endif
                         </div>
                         <div style="display:flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
@@ -35,7 +35,7 @@
                         <div style="color: var(--text-secondary); font-size: 13px;">Author: {{ $history->work?->user?->name }}</div>
                     </div>
 
-                    <div style="display:flex; flex-direction:column; gap: 10px; min-width: 170px;">
+                    <div class="history-actions" style="display:flex; flex-direction:column; gap: 10px; min-width: 170px;">
                         <a href="{{ route('works.chapters.read', [$history->work, $history->chapter]) }}" style="text-align:center; padding: 12px 14px; border-radius: 12px; text-decoration:none; background: linear-gradient(135deg, var(--primary-green), var(--light-green)); color:white; font-weight:700;">Lanjutkan Membaca</a>
                         <a href="{{ route('works.public.show', $history->work) }}" style="text-align:center; padding: 12px 14px; border-radius: 12px; text-decoration:none; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); font-weight:700;">Lihat Detail</a>
                     </div>
@@ -44,15 +44,21 @@
         </div>
     @else
         <div style="background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 18px; padding: 40px; text-align: center; color: var(--text-secondary);">
-            Belum ada riwayat baca. Buka chapter pertama untuk mulai menyimpan progres.
+            Riwayat bacamu akan muncul di sini setelah kamu mulai menjelajah chapter.
         </div>
     @endif
 
     <style>
         @media (max-width: 860px) {
-            div[style*="grid-template-columns: 88px 1fr auto"] {
+            .history-card {
                 grid-template-columns: 1fr !important;
             }
+            .history-actions { min-width: 0 !important; }
+            .history-actions a { width: 100%; }
         }
     </style>
 @endsection
+
+
+
+

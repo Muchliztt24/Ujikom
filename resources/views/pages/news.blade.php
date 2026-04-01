@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title">News</h1>
-        <p class="page-subtitle">Update singkat seputar fitur dan pengembangan Nokomi.</p>
+        <p class="page-subtitle">Kabar terbaru, rilisan pilihan, dan sorotan dari Nokomi.</p>
     </div>
 
     <div style="display: grid; gap: 16px;">

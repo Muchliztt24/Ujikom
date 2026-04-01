@@ -65,7 +65,9 @@
                 </table>
             </div>
         @else
-            <div class="admin-empty">Belum ada karya. Mulai dari tombol tambah karya baru.</div>
+            <div class="admin-empty">Belum ada karya di katalogmu.</div>
         @endif
     </div>
 @endsection
+
+

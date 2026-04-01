@@ -59,7 +59,7 @@
                         id="toggleGenresButton"
                         onclick="toggleGenres()"
                         style="padding: 10px 16px; margin-bottom: 24px; background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer;">
-                    Show More Genre
+                    Lihat Lebih Banyak Genre
                 </button>
             @endif
         @endif
@@ -108,8 +108,8 @@
             @empty
                 <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: 16px; border: 1px dashed var(--border-color);">
                     <div style="font-size: 64px; margin-bottom: 16px;"><i class="bi bi-collection"></i></div>
-                    <h3 style="color: var(--text-primary); margin-bottom: 8px;">Belum Ada Karya</h3>
-                    <p style="color: var(--text-secondary);">@if($selectedGenre) Belum ada karya dengan genre ini. @else Karya-karya menarik akan segera hadir. @endif</p>
+                    <h3 style="color: var(--text-primary); margin-bottom: 8px;">Katalog Belum Terisi</h3>
+                    <p style="color: var(--text-secondary);">@if($selectedGenre) Belum ada judul yang cocok dengan pilihan genre ini. @else Temukan lebih banyak judul pilihan di katalog Nokomi. @endif</p>
                 </div>
             @endforelse
         </div>
@@ -155,8 +155,10 @@
 
             genreList.classList.toggle('genres-expanded');
             toggleButton.textContent = genreList.classList.contains('genres-expanded')
-                ? 'Show Less Genre'
-                : 'Show More Genre';
+                ? 'Tampilkan Lebih Sedikit'
+                : 'Lihat Lebih Banyak Genre';
         }
     </script>
 @endsection
+
+
