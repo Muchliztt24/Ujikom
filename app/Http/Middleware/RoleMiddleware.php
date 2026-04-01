@@ -10,11 +10,13 @@ class RoleMiddleware
 {
     public function handle($request, Closure $next, $role)
     {
-        if (!auth()->check()) {
+        $user = $request->user();
+
+        if (! $user) {
             abort(403);
         }
 
-        if (auth()->user()->role?->name !== $role) {
+        if ($user->role?->name !== $role) {
             abort(403);
         }
 

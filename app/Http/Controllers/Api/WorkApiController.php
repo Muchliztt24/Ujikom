@@ -2,24 +2,43 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\FormatsApiPayloads;
 use App\Http\Controllers\Controller;
 use App\Models\Chapter;
+use App\Models\Genre;
 use App\Models\Work;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class WorkApiController extends Controller
 {
-    public function index(): JsonResponse
+    use FormatsApiPayloads;
+
+    public function index(Request $request): JsonResponse
     {
         $works = Work::query()
             ->with(['genres', 'user'])
             ->withCount('chapters')
             ->where('status', 'approved')
+            ->when($request->filled('type'), fn ($query) => $query->where('type', $request->string('type')->toString()))
+            ->when($request->filled('genre_id'), function ($query) use ($request) {
+                $genreId = (int) $request->integer('genre_id');
+
+                $query->whereHas('genres', fn ($genreQuery) => $genreQuery->where('genres.id', $genreId));
+            })
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $keyword = $request->string('q')->trim()->toString();
+
+                $query->where(function ($builder) use ($keyword) {
+                    $builder->where('title', 'like', "%{$keyword}%")
+                        ->orWhere('description', 'like', "%{$keyword}%");
+                });
+            })
             ->latest()
             ->get();
 
         return response()->json([
-            'data' => $works->map(fn (Work $work) => $this->transformWorkSummary($work)),
+            'data' => $works->map(fn (Work $work) => $this->workPayload($work))->values(),
         ]);
     }
 
@@ -34,16 +53,7 @@ class WorkApiController extends Controller
         ]);
 
         return response()->json([
-            'data' => [
-                ...$this->transformWorkSummary($work),
-                'chapters' => $work->chapters->map(fn (Chapter $chapter) => [
-                    'id' => $chapter->id,
-                    'title' => $chapter->title ?: 'Chapter '.$chapter->chapter_number,
-                    'chapter_number' => $chapter->chapter_number,
-                    'has_text_content' => filled($chapter->text_content),
-                    'created_at' => optional($chapter->created_at)?->toIso8601String(),
-                ])->values(),
-            ],
+            'data' => $this->workPayload($work, true),
         ]);
     }
 
@@ -58,48 +68,21 @@ class WorkApiController extends Controller
 
         return response()->json([
             'data' => [
-                'id' => $chapter->id,
-                'work_id' => $work->id,
+                ...$this->chapterPayload($chapter, includeText: true, includeImages: true, includeComments: false),
                 'work_title' => $work->title,
-                'title' => $chapter->title ?: 'Chapter '.$chapter->chapter_number,
-                'chapter_number' => $chapter->chapter_number,
-                'text_content' => $chapter->text_content,
-                'images' => $chapter->images->map(fn ($image) => [
-                    'id' => $image->id,
-                    'page_number' => $image->page_number,
-                    'image_url' => $this->makePublicUrl($image->image_url),
-                ])->values(),
             ],
         ]);
     }
 
-    private function transformWorkSummary(Work $work): array
+    public function genres(): JsonResponse
     {
-        return [
-            'id' => $work->id,
-            'title' => $work->title,
-            'description' => $work->description,
-            'type' => $work->type,
-            'status' => $work->status,
-            'cover_url' => $this->makePublicUrl($work->cover),
-            'author' => $work->user?->name,
-            'genres' => $work->genres->pluck('name')->values(),
-            'chapters_count' => $work->chapters_count ?? $work->chapters?->count() ?? 0,
-            'created_at' => optional($work->created_at)?->toIso8601String(),
-            'updated_at' => optional($work->updated_at)?->toIso8601String(),
-        ];
-    }
+        $genres = Genre::query()
+            ->withCount('works')
+            ->orderBy('name')
+            ->get();
 
-    private function makePublicUrl(?string $path): ?string
-    {
-        if (!$path) {
-            return null;
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return url('storage/'.$path);
+        return response()->json([
+            'data' => $genres->map(fn (Genre $genre) => $this->genrePayload($genre))->values(),
+        ]);
     }
 }

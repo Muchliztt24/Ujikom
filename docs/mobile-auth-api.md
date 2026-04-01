@@ -7,6 +7,7 @@ Backend sekarang menyediakan auth JSON untuk Flutter/mobile dengan Sanctum.
 - `POST /api/register`
 - `POST /api/login`
 - `GET /api/me`
+- `PATCH /api/me`
 - `POST /api/logout`
 
 Header untuk endpoint terlindungi:
@@ -15,6 +16,8 @@ Header untuk endpoint terlindungi:
 Authorization: Bearer {token}
 Accept: application/json
 ```
+
+Endpoint konten admin, uploader, dan katalog publik ada di [mobile-content-api.md](./mobile-content-api.md).
 
 ## Social login
 

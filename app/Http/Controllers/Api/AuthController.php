@@ -99,6 +99,48 @@ class AuthController extends Controller
         ]);
     }
 
+    public function updateMe(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user()->loadMissing('role');
+
+        $validator = Validator::make($request->all(), [
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => ['sometimes', 'required', 'string', 'min:8'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $payload = [];
+
+        if ($request->filled('name')) {
+            $payload['name'] = $request->string('name')->toString();
+        }
+
+        if ($request->filled('email')) {
+            $payload['email'] = $request->string('email')->lower()->toString();
+        }
+
+        if ($request->filled('password')) {
+            $payload['password'] = $request->string('password')->toString();
+        }
+
+        if ($payload !== []) {
+            $user->update($payload);
+        }
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui.',
+            'user' => $this->transformUser($user->fresh()->loadMissing('role')),
+        ]);
+    }
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()?->delete();
