@@ -16,6 +16,37 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary-green: #2d8b73; --dark-green: #1e5f4f; --light-green: #48c9b0; --bg-main: #0f1419; --bg-card: #1a1f2e; --bg-hover: #252d3d; --text-primary: #e8eaed; --text-secondary: #9aa0a6; --border-color: #2d3748; --danger: #ef4444; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-main); color: var(--text-primary); overflow-x: hidden; }
+        body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background:
+            radial-gradient(circle at top left, rgba(72, 201, 176, 0.08), transparent 32%),
+            radial-gradient(circle at top right, rgba(45, 139, 115, 0.06), transparent 24%);
+            z-index: -1; }
+        .page-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+        .page-ready .page-reveal { opacity: 1; transform: translateY(0); }
+        .page-ready .page-reveal[data-reveal-delay="1"] { transition-delay: 0.08s; }
+        .page-ready .page-reveal[data-reveal-delay="2"] { transition-delay: 0.16s; }
+        .page-ready .page-reveal[data-reveal-delay="3"] { transition-delay: 0.24s; }
+        .media-shell { position: relative; overflow: hidden; isolation: isolate; }
+        .media-shell::before { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(45, 139, 115, 0.34), rgba(72, 201, 176, 0.14)); opacity: 0; transition: opacity 0.35s ease; z-index: 1; pointer-events: none; }
+        .media-shell:hover::before { opacity: 1; }
+        .media-skeleton { position: absolute; inset: 0; background:
+            linear-gradient(110deg, rgba(255,255,255,0.03) 8%, rgba(255,255,255,0.12) 18%, rgba(255,255,255,0.03) 33%),
+            linear-gradient(135deg, rgba(20, 35, 47, 1), rgba(38, 67, 85, 0.95));
+            background-size: 220% 100%, 100% 100%;
+            animation: mediaShimmer 1.35s linear infinite;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+            z-index: 0; }
+        .media-shell.is-loaded .media-skeleton { opacity: 0; visibility: hidden; }
+        [data-media-loading] { opacity: 0; transform: scale(1.025); transition: opacity 0.45s ease, transform 0.55s ease; position: relative; z-index: 2; }
+        .media-shell.is-loaded [data-media-loading] { opacity: 1; transform: scale(1); }
+        .floating-glow { position: absolute; border-radius: 999px; filter: blur(12px); opacity: 0.24; animation: floatingGlow 6s ease-in-out infinite; }
+        @keyframes mediaShimmer {
+            0% { background-position: 180% 0, 0 0; }
+            100% { background-position: -40% 0, 0 0; }
+        }
+        @keyframes floatingGlow {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(0, -14px, 0) scale(1.06); }
+        }
         .navbar { position: fixed; inset: 0 0 auto 0; height: 70px; background: rgba(15, 20, 25, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); z-index: 1000; }
         .navbar.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .navbar-container { max-width: 1400px; height: 100%; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
@@ -234,6 +265,23 @@
         sidebarLinks.forEach((link) => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+        function markMediaLoaded(image) {
+            const shell = image.closest('.media-shell');
+            if (shell) {
+                shell.classList.add('is-loaded');
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('page-ready');
+            document.querySelectorAll('[data-media-loading]').forEach((image) => {
+                if (image.complete && image.naturalWidth > 0) {
+                    markMediaLoaded(image);
+                    return;
+                }
+                image.addEventListener('load', () => markMediaLoaded(image), { once: true });
+                image.addEventListener('error', () => markMediaLoaded(image), { once: true });
             });
         });
         document.addEventListener('keydown', (event) => {

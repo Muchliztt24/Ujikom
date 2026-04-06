@@ -1,4 +1,4 @@
-@extends('layouts.user')
+ï»¿@extends('layouts.user')
 
 @section('content')
     <div style="margin-bottom: 24px;">
@@ -7,13 +7,14 @@
         </a>
     </div>
 
-    <div style="background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 28px;">
+    <div class="page-reveal" style="background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 28px;">
         <div style="display: grid; grid-template-columns: 300px 1fr; gap: 40px; padding: 40px;">
             <div>
                 <div style="position: sticky; top: 100px;">
-                    <div style="position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.4); margin-bottom: 20px;">
+                    <div class="media-shell" style="position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.4); margin-bottom: 20px;">
+                        <div class="media-skeleton"></div>
                         @if($work->cover)
-                            <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;">
+                            <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;" data-media-loading>
                         @else
                             <div style="width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); display: flex; align-items: center; justify-content: center; font-size: 72px; color: white;">
                                 <i class="{{ $work->type === 'novel' ? 'bi bi-book-half' : 'bi bi-palette-fill' }}"></i>
@@ -105,7 +106,7 @@
                 @if($continueChapter)
                     <div style="margin-bottom: 28px; padding: 16px 18px; border-radius: 14px; background: linear-gradient(135deg, rgba(45,139,115,0.16), rgba(72,201,176,0.08)); border: 1px solid rgba(72,201,176,0.18);">
                         <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">Lanjutkan dari progres terakhir</div>
-                        <div style="color: var(--text-secondary); font-size: 14px;">Terakhir dibuka di Chapter {{ $continueChapter->chapter_number }}{{ $continueChapter->title ? ' • ' . $continueChapter->title : '' }}</div>
+                        <div style="color: var(--text-secondary); font-size: 14px;">Terakhir dibuka di Chapter {{ $continueChapter->chapter_number }}{{ $continueChapter->title ? ' â€¢ ' . $continueChapter->title : '' }}</div>
                     </div>
                 @endif
 
@@ -150,7 +151,7 @@
         </div>
     </div>
 
-    <section style="background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); padding: 28px; display: grid; gap: 18px;">
+    <section class="page-reveal" data-reveal-delay="1" style="background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); padding: 28px; display: grid; gap: 18px;">
         <div style="display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;">
             <div>
                 <h2 style="font-family: 'Crimson Pro', serif; font-size: 30px; margin: 0 0 6px;">Komentar Pembaca</h2>
@@ -165,7 +166,7 @@
                     <div style="display:flex; justify-content:space-between; gap:12px; align-items:start; margin-bottom:8px; flex-wrap: wrap;">
                         <div>
                             <div style="font-weight:700; color: var(--text-primary);">{{ $comment->user->name }}</div>
-                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Chapter {{ $comment->chapter->chapter_number }}{{ $comment->chapter->title ? ' • ' . $comment->chapter->title : '' }}</div>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Chapter {{ $comment->chapter->chapter_number }}{{ $comment->chapter->title ? ' â€¢ ' . $comment->chapter->title : '' }}</div>
                         </div>
                         <div style="color: var(--text-secondary); font-size: 12px;">{{ $comment->created_at->diffForHumans() }}</div>
                     </div>
@@ -209,6 +210,7 @@
         }
     </script>
 @endsection
+
 
 
 

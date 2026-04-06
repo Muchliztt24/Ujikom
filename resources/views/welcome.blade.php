@@ -1,7 +1,9 @@
 @extends('layouts.user')
 
 @section('content')
-    <section style="margin-bottom: 60px; position: relative; border-radius: 24px; overflow: hidden; background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 50%, var(--light-green) 100%); padding: 60px 40px; text-align: center;">
+    <section class="page-reveal" style="margin-bottom: 60px; position: relative; border-radius: 24px; overflow: hidden; background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 50%, var(--light-green) 100%); padding: 60px 40px; text-align: center;">
+        <span class="floating-glow" style="width: 180px; height: 180px; top: -24px; left: -28px; background: rgba(255,255,255,0.18);"></span>
+        <span class="floating-glow" style="width: 220px; height: 220px; right: 8%; bottom: -80px; background: rgba(15,20,25,0.22); animation-delay: -2.2s;"></span>
         <div style="position: relative; z-index: 2;">
             <h1 style="font-family: 'Crimson Pro', serif; font-size: 48px; font-weight: 700; color: white; margin-bottom: 16px; text-shadow: 0 4px 12px rgba(0,0,0,0.3);">
                 Selamat Datang di Nokomi
@@ -24,7 +26,7 @@
         <div style="position: absolute; bottom: 20px; right: 20px; font-size: 80px; opacity: 0.12;"><i class="bi bi-palette-fill"></i></div>
     </section>
 
-    <section id="works" style="margin-bottom: 60px;">
+    <section id="works" class="page-reveal" data-reveal-delay="1" style="margin-bottom: 60px;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
             <div>
                 <h2 style="font-family: 'Crimson Pro', serif; font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0 0 4px 0;">Karya Terbaru</h2>
@@ -66,10 +68,11 @@
 
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px;">
             @forelse($works as $work)
-                <a href="{{ route('works.public.show', $work) }}" class="work-card" style="display: block; text-decoration: none; background: var(--bg-card); border-radius: 16px; overflow: hidden; transition: all 0.4s; border: 1px solid var(--border-color); cursor: pointer;">
-                    <div style="position: relative; aspect-ratio: 3/4; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); overflow: hidden;">
+                <a href="{{ route('works.public.show', $work) }}" class="work-card page-reveal" data-reveal-delay="{{ ($loop->index % 3) + 1 }}" style="display: block; text-decoration: none; background: var(--bg-card); border-radius: 16px; overflow: hidden; transition: all 0.4s; border: 1px solid var(--border-color); cursor: pointer;">
+                    <div class="media-shell" style="position: relative; aspect-ratio: 3/4; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); overflow: hidden;">
+                        <div class="media-skeleton"></div>
                         @if($work->cover)
-                            <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="work-cover-img">
+                            <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" class="work-cover-img" data-media-loading loading="lazy">
                         @else
                             <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 64px;">
                                 <i class="{{ $work->type === 'novel' ? 'bi bi-book-half' : 'bi bi-palette-fill' }}"></i>

@@ -1,7 +1,7 @@
 @extends('layouts.user')
 
 @section('content')
-    <div class="page-header">
+    <div class="page-header page-reveal">
         <h1 class="page-title">Collection</h1>
         <p class="page-subtitle">
             @if ($isGuest)
@@ -14,7 +14,7 @@
 
     <div style="display:grid; gap: 26px;">
         @if (! $isGuest)
-            <section style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+            <section class="page-reveal" data-reveal-delay="1" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
                 <div style="background: var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:20px;">
                     <div style="color: var(--text-secondary); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;">Bookmark</div>
                     <div style="font-size:36px; font-weight:800; margin-top:8px;">{{ $bookmarkedWorks->count() }}</div>
@@ -33,7 +33,7 @@
             </section>
 
             @if ($recentHistory->count())
-                <section style="background: var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:24px;">
+                <section class="page-reveal" data-reveal-delay="2" style="background: var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:24px;">
                     <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;">
                         <div>
                             <h2 style="font-size:24px; margin:0 0 6px;">Lanjutkan Membaca</h2>
@@ -45,9 +45,10 @@
                     <div style="display:grid; gap:12px;">
                         @foreach ($recentHistory as $history)
                             <a href="{{ route('works.chapters.read', [$history->work, $history->chapter]) }}" style="display:flex; gap:14px; align-items:center; text-decoration:none; padding:16px; border-radius:16px; background: var(--bg-main); border:1px solid var(--border-color); color:inherit;">
-                                <div style="width:60px; height:78px; border-radius:12px; overflow:hidden; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); display:flex; align-items:center; justify-content:center;">
+                                <div class="media-shell" style="width:60px; height:78px; border-radius:12px; overflow:hidden; background: linear-gradient(135deg, var(--dark-green), var(--primary-green)); display:flex; align-items:center; justify-content:center;">
+                                    <div class="media-skeleton"></div>
                                     @if ($history->work?->cover)
-                                        <img src="{{ asset('storage/' . $history->work->cover) }}" alt="{{ $history->work->title }}" style="width:100%; height:100%; object-fit:cover;">
+                                        <img src="{{ asset('storage/' . $history->work->cover) }}" alt="{{ $history->work->title }}" style="width:100%; height:100%; object-fit:cover;" data-media-loading loading="lazy">
                                     @else
                                         <i class="{{ $history->work?->type === 'novel' ? 'bi bi-book-half' : 'bi bi-palette-fill' }}" style="font-size: 26px; color: white;"></i>
                                     @endif
@@ -63,7 +64,7 @@
                 </section>
             @endif
         @else
-            <section style="background: linear-gradient(135deg, rgba(45,139,115,0.18), rgba(72,201,176,0.08)); border:1px solid rgba(72,201,176,0.22); border-radius:20px; padding:26px; display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap;">
+            <section class="page-reveal" data-reveal-delay="1" style="background: linear-gradient(135deg, rgba(45,139,115,0.18), rgba(72,201,176,0.08)); border:1px solid rgba(72,201,176,0.22); border-radius:20px; padding:26px; display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap;">
                 <div>
                     <h2 style="font-size:24px; margin:0 0 6px;">Masuk untuk membuka rak pribadi</h2>
                     <p style="margin:0; color: var(--text-secondary); max-width:620px;">Simpan judul favorit, susun library, dan lanjutkan progress bacamu dari mana saja.</p>
@@ -76,7 +77,7 @@
         @endif
 
         @if ($novels->count())
-            <section>
+            <section class="page-reveal" data-reveal-delay="2">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;">
                     <div>
                         <h2 style="font-size:24px; margin:0 0 6px;">Rak Novel</h2>
@@ -87,7 +88,10 @@
                     @foreach ($novels as $work)
                         <a href="{{ route('works.public.show', $work) }}" class="work-card" style="text-decoration:none;">
                             @if ($work->cover)
-                                <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover">
+                                <div class="media-shell" style="aspect-ratio: 3/4;">
+                                    <div class="media-skeleton"></div>
+                                    <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover" data-media-loading loading="lazy">
+                                </div>
                             @endif
                             <div class="work-info">
                                 <div class="work-title">{{ $work->title }}</div>
@@ -100,7 +104,7 @@
         @endif
 
         @if ($comics->count())
-            <section>
+            <section class="page-reveal" data-reveal-delay="2">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;">
                     <div>
                         <h2 style="font-size:24px; margin:0 0 6px;">Rak Comic</h2>
@@ -111,7 +115,10 @@
                     @foreach ($comics as $work)
                         <a href="{{ route('works.public.show', $work) }}" class="work-card" style="text-decoration:none;">
                             @if ($work->cover)
-                                <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover">
+                                <div class="media-shell" style="aspect-ratio: 3/4;">
+                                    <div class="media-skeleton"></div>
+                                    <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover" data-media-loading loading="lazy">
+                                </div>
                             @endif
                             <div class="work-info">
                                 <div class="work-title">{{ $work->title }}</div>
@@ -123,7 +130,7 @@
             </section>
         @endif
 
-        <section>
+        <section class="page-reveal" data-reveal-delay="3">
             <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:18px;">
                 <div>
                     <h2 style="font-size:24px; margin:0 0 6px;">Rekomendasi</h2>
@@ -136,7 +143,10 @@
                     @foreach ($recommendedWorks as $work)
                         <a href="{{ route('works.public.show', $work) }}" class="work-card" style="text-decoration:none;">
                             @if ($work->cover)
-                                <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover">
+                                <div class="media-shell" style="aspect-ratio: 3/4;">
+                                    <div class="media-skeleton"></div>
+                                    <img src="{{ asset('storage/' . $work->cover) }}" alt="{{ $work->title }}" class="work-cover" data-media-loading loading="lazy">
+                                </div>
                             @endif
                             <div class="work-info">
                                 <div class="work-title">{{ $work->title }}</div>
@@ -152,7 +162,7 @@
             @endif
         </section>
 
-        <section style="background: var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:24px;">
+        <section class="page-reveal" data-reveal-delay="3" style="background: var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:24px;">
             <div style="margin-bottom:18px;">
                 <h2 style="font-size:24px; margin:0 0 6px;">Genre Pilihan</h2>
                 <p style="margin:0; color: var(--text-secondary);">Tema yang paling sering muncul di katalog Nokomi.</p>
