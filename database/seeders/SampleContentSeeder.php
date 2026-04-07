@@ -17,6 +17,35 @@ use Illuminate\Support\Str;
 class SampleContentSeeder extends Seeder
 {
     private array $genreIds = [];
+    private string $coverSourcePath;
+    private array $coverAssetMap = [
+        'Bumi' => ['bumi'],
+        'Bulan' => ['bulan'],
+        'Matahari' => ['matahari'],
+        'Selena' => ['selena'],
+        'Komet' => ['komet by tere liye'],
+        'Komet Minor' => ['komet minor'],
+        'Sagaras' => ['sagaras'],
+        'Pergi' => ['pergi - tere liye'],
+        'Laskar Pelangi' => ['laskar pelangi'],
+        'Sang Pemimpi' => ['sang pemimpi'],
+        'Harry Potter and the Philosopher\'s Stone' => ['harry potter and the philosopher'],
+        'The Hobbit' => ['hobbit'],
+        'The Hunger Games' => ['the hunger games'],
+        'A Study in Scarlet' => ['a study in scarlet'],
+        'The King in Yellow' => ['the king in yellow'],
+        'Percy Jackson & The Olympians: The Lightning Thief' => ['percy jackson', 'lightning thief'],
+        'Chainsaw Man' => ['chainsaw man', 'download (4)'],
+        'One Piece' => ['one piece'],
+        'Naruto' => ['naruto'],
+        'Jujutsu Kaisen' => ['jujutsu kaisen'],
+        'Attack on Titan' => ['attack on titan', 'titan'],
+        'Death Note' => ['death note'],
+        'Solo Leveling' => ['solo leveling'],
+        'Tower of God' => ['tower of god'],
+        'Omniscient Reader\'s Viewpoint' => ['omniscient reader'],
+        'The Beginning After the End' => ['tbate', 'beginning after the end'],
+    ];
 
     private array $catalog = [
         [
@@ -59,6 +88,76 @@ class SampleContentSeeder extends Seeder
                 ['title' => 'Jejak yang Hilang', 'text' => 'Perjalanan menuju pusat konflik dimulai dengan teka-teki baru yang membuat arah pencarian menjadi semakin mendesak.'],
                 ['title' => 'Batas Kepercayaan', 'text' => 'Setiap tokoh diuji oleh keputusan yang memisahkan logika, perasaan, dan loyalitas mereka terhadap satu sama lain.'],
                 ['title' => 'Cahaya Terakhir', 'text' => 'Bab ini menutup satu fase perjalanan dengan suasana intens, sambil menyiapkan skala konflik yang lebih luas untuk tahap berikutnya.'],
+            ],
+        ],
+        [
+            'title' => 'Selena',
+            'original_author' => 'Tere Liye',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'asep',
+            'genres' => ['Fantasy', 'Adventure', 'Sci-Fi'],
+            'description' => 'Novel Dunia Paralel yang menyorot masa muda Selena dan membuka akar konflik, relasi, dan keputusan yang berpengaruh ke seri utamanya.',
+            'chapters' => [
+                ['title' => 'Asrama Bayangan', 'text' => 'Selena tumbuh dalam lingkungan yang keras, dan sejak awal harus belajar membaca kekuatan, ancaman, serta keheningan yang tidak pernah benar-benar aman.'],
+                ['title' => 'Guru dan Luka Lama', 'text' => 'Pertemuan dengan figur-figur penting di masa muda Selena memperlihatkan bagaimana karakter kuat bisa lahir dari kehilangan dan tekanan yang terus menumpuk.'],
+                ['title' => 'Awal dari Segalanya', 'text' => 'Bab ini memberi fondasi emosional yang kuat, menjelaskan kenapa pilihan-pilihan Selena di masa depan terasa begitu berat dan personal.'],
+            ],
+        ],
+        [
+            'title' => 'Komet',
+            'original_author' => 'Tere Liye',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'nayla',
+            'genres' => ['Fantasy', 'Adventure', 'Sci-Fi'],
+            'description' => 'Kelanjutan serial Dunia Paralel yang membawa konflik ke skala lebih besar dengan ritme petualangan yang cepat dan misteri yang makin terbuka.',
+            'chapters' => [
+                ['title' => 'Isyarat dari Jauh', 'text' => 'Petunjuk baru muncul dari arah yang tidak diduga, mendorong para tokoh kembali bergerak sebelum ancaman sempat membesar.'],
+                ['title' => 'Kota yang Bergejolak', 'text' => 'Situasi lapangan jauh lebih rumit dibanding perkiraan, karena politik antar wilayah mulai memengaruhi misi utama.'],
+                ['title' => 'Lintasan Komet', 'text' => 'Puncak ketegangan mempertemukan keputusan cepat, resiko besar, dan dampak yang akan terasa sampai perjalanan berikutnya.'],
+            ],
+        ],
+        [
+            'title' => 'Komet Minor',
+            'original_author' => 'Tere Liye',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'raka',
+            'genres' => ['Fantasy', 'Adventure', 'Sci-Fi'],
+            'description' => 'Novel lanjutan yang tetap berada di semesta Dunia Paralel dengan fokus pada ancaman baru, perjalanan intens, dan perkembangan karakter utama.',
+            'chapters' => [
+                ['title' => 'Misi Tak Resmi', 'text' => 'Perjalanan kali ini terasa lebih liar karena banyak keputusan harus diambil tanpa kepastian dukungan dari pihak manapun.'],
+                ['title' => 'Jejak yang Ditutupi', 'text' => 'Setiap informasi penting datang bersama jebakan, membuat langkah kecil sekalipun terasa menentukan.'],
+                ['title' => 'Orbit Baru', 'text' => 'Ketika kebenaran mulai terbuka, para tokoh menyadari bahwa peta konflik mereka selama ini belum lengkap.'],
+            ],
+        ],
+        [
+            'title' => 'Sagaras',
+            'original_author' => 'Tere Liye',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'asep',
+            'genres' => ['Fantasy', 'Adventure', 'Sci-Fi'],
+            'description' => 'Entry penting semesta Dunia Paralel yang menyorot lapisan sejarah, rahasia keluarga, dan momentum besar dalam perjalanan serial ini.',
+            'chapters' => [
+                ['title' => 'Nama yang Tersimpan', 'text' => 'Sebuah nama dari masa lalu memunculkan arah baru, sekaligus membuka luka dan pertanyaan yang selama ini terkubur.'],
+                ['title' => 'Gerbang Sagaras', 'text' => 'Tempat yang dituju bukan sekadar lokasi baru, tetapi ruang yang menyimpan jawaban bagi konflik yang telah lama mengendap.'],
+                ['title' => 'Ombak Besar', 'text' => 'Bab penutup menghadirkan skala emosi dan ancaman yang besar, menegaskan pentingnya perjalanan ini bagi keseluruhan seri.'],
+            ],
+        ],
+        [
+            'title' => 'Pergi',
+            'original_author' => 'Tere Liye',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'nayla',
+            'genres' => ['Action', 'Drama', 'Thriller'],
+            'description' => 'Novel aksi-thriller Tere Liye yang bergerak cepat, penuh intrik, dan berfokus pada tokoh dengan masa lalu rumit serta jaringan konflik yang luas.',
+            'chapters' => [
+                ['title' => 'Jejak yang Dihapus', 'text' => 'Kisah dibuka dengan suasana tegang ketika masa lalu dan identitas menjadi sesuatu yang harus dijaga sekaligus diburu.'],
+                ['title' => 'Kota yang Tak Pernah Tidur', 'text' => 'Aksi dan intrik bergerak beriringan, memaksa tokoh utama terus mengambil keputusan cepat di tengah tekanan.'],
+                ['title' => 'Harga dari Keputusan', 'text' => 'Ketika pertarungan tidak lagi bisa dihindari, sisi emosional cerita ikut naik dan membuat konflik terasa lebih personal.'],
             ],
         ],
         [
@@ -143,6 +242,20 @@ class SampleContentSeeder extends Seeder
                 ['title' => 'Sekolah Kecil', 'text' => 'Dunia sekolah sederhana menjadi ruang tumbuh bagi imajinasi, harapan, dan solidaritas yang kuat di antara anak-anaknya.'],
                 ['title' => 'Mimpi yang Besar', 'text' => 'Setiap tokoh memperlihatkan bentuk perjuangan yang berbeda, tetapi semuanya bertemu pada satu hal: keberanian untuk tetap bermimpi.'],
                 ['title' => 'Persahabatan', 'text' => 'Kisah ini terus hidup lewat ikatan antarteman yang membuat keterbatasan terasa tidak cukup kuat untuk mematahkan semangat.'],
+            ],
+        ],
+        [
+            'title' => 'Sang Pemimpi',
+            'original_author' => 'Andrea Hirata',
+            'type' => 'novel',
+            'status' => 'approved',
+            'uploader' => 'raka',
+            'genres' => ['Drama', 'Adventure', 'Comedy'],
+            'description' => 'Novel lanjutan Andrea Hirata yang tetap menonjolkan mimpi, persahabatan, dan optimisme di tengah realitas hidup yang tidak mudah.',
+            'chapters' => [
+                ['title' => 'Tiga Sahabat', 'text' => 'Cerita kembali menempatkan persahabatan sebagai pusat tenaga pendorong, terutama saat masa depan terasa jauh dari kata pasti.'],
+                ['title' => 'Mimpi yang Diuji', 'text' => 'Keinginan untuk keluar dari keterbatasan menghadapi dunia nyata, tetapi semangat para tokohnya justru terasa semakin kuat.'],
+                ['title' => 'Jalan Panjang', 'text' => 'Bab ini menegaskan bahwa mimpi besar bukan sesuatu yang hadir tiba-tiba, melainkan dibangun dari keberanian untuk terus melangkah.'],
             ],
         ],
         [
@@ -305,6 +418,7 @@ class SampleContentSeeder extends Seeder
     {
         $this->genreIds = Genre::query()->pluck('id', 'name')->all();
         Storage::disk('public')->deleteDirectory('generated/real-catalog');
+        $this->coverSourcePath = base_path('Cover');
 
         $uploaders = [
             'asep' => User::query()->where('email', 'asep@nokomi.test')->firstOrFail(),
@@ -318,15 +432,17 @@ class SampleContentSeeder extends Seeder
             ->keyBy('email');
 
         foreach ($this->catalog as $entry) {
-            $work = Work::query()->create([
-                'title' => $entry['title'],
-                'original_author' => $entry['original_author'],
-                'description' => $entry['description'],
-                'cover' => $this->generateCover($entry['title'], $entry['original_author'], $entry['type']),
-                'type' => $entry['type'],
-                'user_id' => $uploaders[$entry['uploader']]->id,
-                'status' => $entry['status'],
-            ]);
+            $work = Work::query()->updateOrCreate(
+                ['title' => $entry['title']],
+                [
+                    'original_author' => $entry['original_author'],
+                    'description' => $entry['description'],
+                    'cover' => $this->generateCover($entry['title'], $entry['original_author'], $entry['type']),
+                    'type' => $entry['type'],
+                    'user_id' => $uploaders[$entry['uploader']]->id,
+                    'status' => $entry['status'],
+                ]
+            );
 
             $work->genres()->sync(
                 collect($entry['genres'])
@@ -336,6 +452,7 @@ class SampleContentSeeder extends Seeder
                     ->all()
             );
 
+            $work->chapters()->delete();
             $chapters = collect($entry['chapters'])->map(function (array $chapterData, int $index) use ($work) {
                 $chapter = Chapter::query()->create([
                     'work_id' => $work->id,
@@ -434,6 +551,10 @@ class SampleContentSeeder extends Seeder
 
     private function generateCover(string $title, string $author, string $type): string
     {
+        if ($coverPath = $this->importExistingCover($title)) {
+            return $coverPath;
+        }
+
         $slug = Str::slug($title);
         $path = "generated/real-catalog/covers/{$slug}.svg";
         $palette = $this->paletteFor($title, $type);
@@ -480,6 +601,40 @@ SVG;
         return $path;
     }
 
+    private function importExistingCover(string $title): ?string
+    {
+        $candidates = $this->coverAssetMap[$title] ?? [];
+        if ($candidates === []) {
+            return null;
+        }
+
+        $files = collect(glob($this->coverSourcePath.DIRECTORY_SEPARATOR.'*') ?: [])
+            ->filter(fn (string $path) => is_file($path));
+
+        $matched = $files->first(function (string $path) use ($candidates) {
+            $name = Str::lower(pathinfo($path, PATHINFO_FILENAME));
+
+            foreach ($candidates as $candidate) {
+                if (str_contains($name, Str::lower($candidate))) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        if (! $matched) {
+            return null;
+        }
+
+        $extension = strtolower(pathinfo($matched, PATHINFO_EXTENSION));
+        $target = 'catalog-covers/'.Str::slug($title).'.'.$extension;
+
+        Storage::disk('public')->put($target, file_get_contents($matched));
+
+        return $target;
+    }
+
     private function generateComicPage(Work $work, Chapter $chapter, int $page): string
     {
         $slug = Str::slug($work->title);
@@ -503,7 +658,7 @@ SVG;
     <rect width="1080" height="1600" fill="url(#bg)" />
     <rect x="34" y="34" width="1012" height="1532" rx="28" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)" />
     <text x="76" y="110" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#f8fafc">{$this->escape($headline)}</text>
-    <text x="76" y="148" font-family="Arial, sans-serif" font-size="18" fill="{$palette['soft']}">{$this->escape($work->original_author)} • {$this->escape($chapterTitle)}</text>
+    <text x="76" y="148" font-family="Arial, sans-serif" font-size="18" fill="{$palette['soft']}">{$this->escape($work->original_author)} | {$this->escape($chapterTitle)}</text>
     <rect x="76" y="190" width="928" height="310" rx="24" fill="url(#panel)" opacity="0.26" />
     <rect x="76" y="534" width="450" height="408" rx="24" fill="rgba(255,255,255,0.05)" />
     <rect x="554" y="534" width="450" height="408" rx="24" fill="rgba(255,255,255,0.05)" />
@@ -541,7 +696,7 @@ SVG;
 
     private function wrapTitle(string $title, int $maxChars, int $maxLines): array
     {
-        $words = preg_split('/\s+/', trim($title)) ?: [];
+        $words = preg_split('/\\s+/', trim($title)) ?: [];
         $lines = [];
         $current = '';
 
