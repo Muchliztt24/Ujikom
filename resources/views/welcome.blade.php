@@ -104,7 +104,7 @@
                         @endif
                         <div style="display: flex; align-items: center; justify-content: space-between; color: var(--text-secondary); font-size: 13px;">
                             <div style="display: flex; align-items: center; gap: 4px;"><i class="bi bi-star-fill" style="color: #fbbf24;"></i><span style="font-weight: 600; color: var(--text-primary);">{{ number_format(rand(40, 50) / 10, 1) }}</span></div>
-                            <div style="font-size: 11px;">by {{ $work->user->name }}</div>
+                            <div style="font-size: 11px;">{{ $work->display_author }}</div>
                         </div>
                     </div>
                 </a>

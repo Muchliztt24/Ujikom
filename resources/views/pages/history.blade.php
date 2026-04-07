@@ -32,7 +32,7 @@
                             <span style="padding: 5px 10px; border-radius: 999px; background: rgba(45, 139, 115, 0.15); color: var(--light-green); font-size: 12px; font-weight: 700;">{{ ucfirst($history->work?->type ?? 'work') }}</span>
                             <span style="padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.06); color: var(--text-secondary); font-size: 12px; font-weight: 700;">{{ $history->last_read_at?->diffForHumans() }}</span>
                         </div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">Author: {{ $history->work?->user?->name }}</div>
+                                <div style="color: var(--text-secondary); font-size: 13px;">Author: {{ $history->work?->display_author }}</div>
                     </div>
 
                     <div class="history-actions" style="display:flex; flex-direction:column; gap: 10px; min-width: 170px;">

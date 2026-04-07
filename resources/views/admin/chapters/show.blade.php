@@ -94,7 +94,8 @@
                     <h3 style="margin: 0 0 14px; color: #1e5f4f;">Info Ringkas</h3>
                     <div style="display: grid; gap: 10px; color: #495057; font-size: 14px; line-height: 1.7;">
                         <div><strong>Work:</strong> {{ $chapter->work->title }}</div>
-                        <div><strong>Author:</strong> {{ $chapter->work->user->name }}</div>
+                        <div><strong>Author Asli:</strong> {{ $chapter->work->display_author }}</div>
+                        <div><strong>Uploader:</strong> {{ $chapter->work->user->name }}</div>
                         <div><strong>Email:</strong> {{ $chapter->work->user->email }}</div>
                         <div><strong>Status Work:</strong> {{ ucfirst($chapter->work->status) }}</div>
                         <div><strong>Genre:</strong> {{ $chapter->work->genres->pluck('name')->implode(', ') ?: '-' }}</div>

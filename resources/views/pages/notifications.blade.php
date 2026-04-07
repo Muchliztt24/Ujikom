@@ -88,7 +88,7 @@
                         </div>
                         <div style="flex:1;">
                             <div style="font-weight:700; color: var(--text-primary);">{{ $work->title }}</div>
-                            <div style="color: var(--text-secondary); font-size:14px; margin-top:4px;">{{ ucfirst($work->type) }} | {{ $work->user->name }}</div>
+                                            <div style="color: var(--text-secondary); font-size:14px; margin-top:4px;">{{ ucfirst($work->type) }} | {{ $work->display_author }}</div>
                         </div>
                         <div style="color: var(--text-secondary); font-size:12px; white-space:nowrap;">{{ $work->created_at?->diffForHumans() }}</div>
                     </a>

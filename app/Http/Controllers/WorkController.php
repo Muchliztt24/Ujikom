@@ -38,6 +38,7 @@ class WorkController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'original_author' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:comic,novel',
             'genre_ids' => 'required|array',
@@ -52,6 +53,7 @@ class WorkController extends Controller
 
         $work = Work::create([
             'title' => $request->title,
+            'original_author' => $request->original_author,
             'description' => $request->description,
             'type' => $request->type,
             'cover' => $coverPath,
@@ -81,6 +83,7 @@ class WorkController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'original_author' => 'required|string|max:255',
             'description' => 'nullable|string',
             'type' => 'required|in:comic,novel',
             'genre_ids' => 'required|array',
@@ -94,6 +97,7 @@ class WorkController extends Controller
 
         $work->update([
             'title' => $request->title,
+            'original_author' => $request->original_author,
             'description' => $request->description,
             'type' => $request->type,
         ]);

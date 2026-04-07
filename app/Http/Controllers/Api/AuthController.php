@@ -8,8 +8,8 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -18,6 +18,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['nullable', 'string', 'min:3', 'max:50', 'alpha_dash', Rule::unique('users', 'username')],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'string', 'min:8'],
         ]);
@@ -33,6 +34,9 @@ class AuthController extends Controller
 
         $user = User::query()->create([
             'name' => $request->string('name')->toString(),
+            'username' => $request->filled('username')
+                ? $request->string('username')->toString()
+                : Str::slug($request->string('name')->toString()).'-'.str()->lower(Str::random(4)),
             'email' => $request->string('email')->lower()->toString(),
             'password' => $request->string('password')->toString(),
             'role_id' => $userRole->id,
@@ -106,7 +110,13 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'username' => ['sometimes', 'required', 'string', 'min:3', 'max:50', 'alpha_dash', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'bio' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'profile_visibility' => ['sometimes', 'required', Rule::in(['public', 'private'])],
+            'email_notifications' => ['sometimes', 'boolean'],
+            'reading_history_visible' => ['sometimes', 'boolean'],
+            'avatar' => ['sometimes', 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'password' => ['sometimes', 'required', 'string', 'min:8'],
         ]);
 
@@ -123,8 +133,32 @@ class AuthController extends Controller
             $payload['name'] = $request->string('name')->toString();
         }
 
+        if ($request->filled('username')) {
+            $payload['username'] = $request->string('username')->toString();
+        }
+
         if ($request->filled('email')) {
             $payload['email'] = $request->string('email')->lower()->toString();
+        }
+
+        if ($request->exists('bio')) {
+            $payload['bio'] = $request->input('bio');
+        }
+
+        if ($request->filled('profile_visibility')) {
+            $payload['profile_visibility'] = $request->string('profile_visibility')->toString();
+        }
+
+        if ($request->has('email_notifications')) {
+            $payload['email_notifications'] = $request->boolean('email_notifications');
+        }
+
+        if ($request->has('reading_history_visible')) {
+            $payload['reading_history_visible'] = $request->boolean('reading_history_visible');
+        }
+
+        if ($request->hasFile('avatar')) {
+            $payload['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
         if ($request->filled('password')) {
@@ -155,8 +189,14 @@ class AuthController extends Controller
         return [
             'id' => $user->id,
             'name' => $user->name,
+            'username' => $user->username,
             'email' => $user->email,
             'avatar' => $user->avatar,
+            'avatar_url' => $user->avatar_url,
+            'bio' => $user->bio,
+            'profile_visibility' => $user->profile_visibility,
+            'email_notifications' => (bool) $user->email_notifications,
+            'reading_history_visible' => (bool) $user->reading_history_visible,
             'role' => $user->role?->name ?? 'user',
         ];
     }

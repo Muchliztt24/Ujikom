@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('content')
     <div class="content-header">
@@ -37,7 +37,10 @@
                         @foreach ($works as $work)
                             <tr>
                                 <td>{{ $work->title }}</td>
-                                <td>{{ $work->user->name }}</td>
+                                    <td>
+                                        <div>{{ $work->display_author }}</div>
+                                        <div class="admin-muted" style="font-size: 12px; margin-top: 4px;">Uploader: {{ $work->user->name }}</div>
+                                    </td>
                                 <td><span class="admin-chip">{{ ucfirst($work->type) }}</span></td>
                                 <td><span class="admin-chip">{{ ucfirst($work->status) }}</span></td>
                                 <td>{{ $work->genres->pluck('name')->take(3)->implode(', ') ?: '-' }}</td>
@@ -71,3 +74,4 @@
         @endif
     </div>
 @endsection
+

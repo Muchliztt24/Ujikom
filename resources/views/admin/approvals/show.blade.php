@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('content')
     <div class="content-header">
@@ -44,7 +44,8 @@
                     </div>
                     <h2 style="margin: 0 0 8px; color: var(--admin-text); font-size: 30px;">{{ $work->title }}</h2>
                     <div class="admin-muted" style="font-size: 14px; line-height: 1.8;">
-                        Author: {{ $work->user->name }}<br>
+                                    Author Asli: {{ $work->display_author }}<br>
+                                    Uploader: {{ $work->user->name }}<br>
                         Email: {{ $work->user->email }}<br>
                         Dibuat: {{ $work->created_at?->format('d M Y H:i') ?? '-' }}<br>
                         Chapter: {{ $work->chapters->count() }}
@@ -94,5 +95,6 @@
         }
     </style>
 @endsection
+
 
 

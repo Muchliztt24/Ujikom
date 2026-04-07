@@ -36,6 +36,18 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
+        .admin-reveal { opacity: 0; transform: translateY(22px) scale(0.99); transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1); will-change: opacity, transform; }
+        .admin-reveal.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+        .page-loader { position: fixed; inset: 0; background: rgba(6, 19, 26, 0.96); display: flex; align-items: center; justify-content: center; z-index: 2400; opacity: 1; visibility: visible; transition: opacity 0.4s ease, visibility 0.4s ease; }
+        .page-loader.is-hidden { opacity: 0; visibility: hidden; }
+        .page-loader-content { display: grid; justify-items: center; gap: 16px; }
+        .book-loader { position: relative; width: 86px; height: 62px; perspective: 120px; }
+        .book-loader-cover,
+        .book-loader-page { position: absolute; inset: 0; border-radius: 8px; transform-origin: left center; }
+        .book-loader-cover { background: linear-gradient(135deg, #1f8f79, #4ac6a8); box-shadow: 0 14px 28px rgba(0,0,0,0.24); animation: bookOpen 1.3s ease-in-out infinite; }
+        .book-loader-page { background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(228,238,241,0.9)); left: 8px; right: 4px; animation: pageFlip 1.3s ease-in-out infinite; }
+        .book-loader-page.page-two { animation-delay: 0.18s; opacity: 0.88; }
+        .loader-label { color: var(--admin-text-soft); font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
         .navbar { position: fixed; inset: 0 0 auto 0; height: 70px; background: linear-gradient(135deg, rgba(5, 18, 24, 0.96), rgba(10, 30, 38, 0.94)); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; padding: 0 30px; z-index: 1000; box-shadow: 0 8px 30px rgba(0,0,0,0.28); backdrop-filter: blur(12px); gap: 16px; }
         .nav-menu-toggle { display: none; width: 42px; height: 42px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04); color: var(--admin-text); align-items: center; justify-content: center; cursor: pointer; }
         .navbar-brand { display: flex; align-items: center; gap: 15px; margin-left: 250px; }
@@ -44,7 +56,8 @@
         .navbar-right { margin-left: auto; }
         .user-link { color: var(--admin-text); text-decoration: none; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px; transition: background 0.3s ease, border-color 0.3s ease; border: 1px solid transparent; }
         .user-link:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--admin-border); }
-        .user-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #3db69b, #79d9c1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #062028; }
+        .user-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #3db69b, #79d9c1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #062028; overflow: hidden; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .sidebar { width: 250px; position: fixed; top: 70px; left: 0; height: calc(100vh - 70px); background: linear-gradient(180deg, rgba(4, 16, 22, 0.97) 0%, rgba(8, 24, 31, 0.96) 48%, rgba(10, 28, 33, 0.95) 100%); border-right: 1px solid var(--admin-border); overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.18); }
         .sidebar-menu { padding: 20px 0; }
         .menu-section { margin-bottom: 28px; }
@@ -116,6 +129,24 @@
         .admin-stat-note { color: var(--admin-text-soft); font-size: 13px; margin-top: 8px; }
         .admin-list { display: grid; gap: 12px; }
         .admin-list-item { padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
+        @keyframes bookOpen {
+            0%, 100% { transform: rotateY(0deg); }
+            45% { transform: rotateY(-34deg); }
+            65% { transform: rotateY(-12deg); }
+        }
+        @keyframes pageFlip {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(-24deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .admin-reveal,
+            .menu-item,
+            .account-action,
+            .nav-menu-toggle {
+                transition: none !important;
+                transform: none !important;
+            }
+        }
         @media (max-width: 1024px) {
             .nav-menu-toggle { display: inline-flex; }
             .navbar { padding: 0 18px; }
@@ -144,6 +175,16 @@
 </head>
 
 <body>
+    <div class="page-loader" id="adminPageLoader">
+        <div class="page-loader-content">
+            <div class="book-loader" aria-hidden="true">
+                <div class="book-loader-page"></div>
+                <div class="book-loader-page page-two"></div>
+                <div class="book-loader-cover"></div>
+            </div>
+            <div class="loader-label">Preparing Dashboard</div>
+        </div>
+    </div>
     <nav class="navbar">
         <button type="button" class="nav-menu-toggle" id="adminMenuToggle" aria-label="Buka menu">
             <i class="bi bi-list"></i>
@@ -163,7 +204,7 @@
         <div class="navbar-right">
             <a href="{{ route('profile.edit') }}" class="user-link">
                 <span>{{ Auth::user()->name ?? 'Admin' }}</span>
-                <div class="user-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}</div>
+                <div class="user-avatar">@if(Auth::user()?->avatar_url)<img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name }}">@else{{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}@endif</div>
             </a>
         </div>
     </nav>
@@ -189,7 +230,13 @@
             <div class="menu-section">
                 <div class="menu-section-title">Profile</div>
                 <div class="account-card">
-                    <strong>{{ auth()->user()->name }}</strong>
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                        <div class="user-avatar">@if(auth()->user()->avatar_url)<img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}">@else{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}@endif</div>
+                        <div>
+                            <strong>{{ auth()->user()->name }}</strong>
+                            <span>{{ '@'.auth()->user()->username }}</span>
+                        </div>
+                    </div>
                     <span>{{ ucfirst(auth()->user()->role?->name ?? 'user') }}</span>
                     <div class="account-actions">
                         <a href="{{ route('profile.edit') }}" class="account-action"><i class="bi bi-person-circle"></i><span>Edit Profile</span></a>
@@ -203,13 +250,14 @@
 
     <div class="sidebar-overlay" id="adminSidebarOverlay"></div>
 
-    <main class="main-content">@yield('content')</main>
+    <main class="main-content admin-reveal">@yield('content')</main>
 
     <script>
         const adminMenuToggle = document.getElementById('adminMenuToggle');
         const adminSidebar = document.getElementById('adminSidebar');
         const adminSidebarOverlay = document.getElementById('adminSidebarOverlay');
         const adminSidebarLinks = document.querySelectorAll('#adminSidebar a');
+        const adminPageLoader = document.getElementById('adminPageLoader');
 
         function closeAdminSidebar() {
             adminSidebar.classList.remove('active');
@@ -226,6 +274,44 @@
         adminSidebarLinks.forEach((link) => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 1024) closeAdminSidebar();
+            });
+        });
+        function initializeAdminReveal() {
+            const items = document.querySelectorAll('.admin-reveal, .content-header, .content-body, .admin-stat-card, .admin-list-item');
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            items.forEach((item) => item.classList.add('admin-reveal'));
+            if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+                items.forEach((item) => item.classList.add('is-visible'));
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+            items.forEach((item) => observer.observe(item));
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeAdminReveal();
+            window.setTimeout(() => adminPageLoader?.classList.add('is-hidden'), 420);
+            document.querySelectorAll('a[href]').forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    const href = link.getAttribute('href');
+                    const target = link.getAttribute('target');
+                    if (!href || href.startsWith('#') || href.startsWith('javascript:') || target === '_blank' || event.ctrlKey || event.metaKey) {
+                        return;
+                    }
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        if (url.origin === window.location.origin) {
+                            adminPageLoader?.classList.remove('is-hidden');
+                        }
+                    } catch (error) {}
+                });
             });
         });
         document.addEventListener('keydown', (event) => {

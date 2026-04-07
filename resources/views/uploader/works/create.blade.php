@@ -18,6 +18,11 @@
                         @error('title')<div class="admin-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="admin-field">
+                        <label class="admin-label" for="original_author">Author Asli</label>
+                        <input id="original_author" name="original_author" type="text" class="admin-input" value="{{ old('original_author') }}" required>
+                        @error('original_author')<div class="admin-error">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="admin-field">
                         <label class="admin-label" for="description">Deskripsi</label>
                         <textarea id="description" name="description" class="admin-textarea">{{ old('description') }}</textarea>
                         @error('description')<div class="admin-error">{{ $message }}</div>@enderror

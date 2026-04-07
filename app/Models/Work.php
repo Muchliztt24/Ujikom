@@ -9,7 +9,9 @@ class Work extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'cover', 'type', 'status', 'user_id'];
+    protected $fillable = ['title', 'original_author', 'description', 'cover', 'type', 'status', 'user_id'];
+
+    protected $appends = ['display_author'];
 
     // Relasi ke uploader
     public function user()
@@ -35,5 +37,10 @@ class Work extends Model
     public function readingHistories()
     {
         return $this->hasMany(ReadingHistory::class);
+    }
+
+    public function getDisplayAuthorAttribute(): ?string
+    {
+        return $this->original_author ?: $this->user?->name;
     }
 }

@@ -78,10 +78,11 @@
                 <h1 style="font-family: 'Crimson Pro', serif; font-size: 42px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; line-height: 1.2;">{{ $work->title }}</h1>
 
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
-                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-green), var(--light-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px;">{{ strtoupper(substr($work->user->name, 0, 1)) }}</div>
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-green), var(--light-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px;">{{ strtoupper(substr($work->display_author, 0, 1)) }}</div>
                     <div>
-                        <div style="font-size: 13px; color: var(--text-secondary);">Dibuat oleh</div>
-                        <div style="font-weight: 600; color: var(--text-primary);">{{ $work->user->name }}</div>
+                        <div style="font-size: 13px; color: var(--text-secondary);">Author Asli</div>
+                        <div style="font-weight: 600; color: var(--text-primary);">{{ $work->display_author }}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 3px;">Diunggah oleh {{ $work->user->name }}</div>
                     </div>
                 </div>
 

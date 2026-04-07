@@ -86,6 +86,7 @@ class UploaderPortalApiController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'original_author' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'type' => ['required', 'in:comic,novel'],
             'genre_ids' => ['required', 'array', 'min:1'],
@@ -99,6 +100,7 @@ class UploaderPortalApiController extends Controller
 
         $work = Work::query()->create([
             'title' => $validated['title'],
+            'original_author' => $validated['original_author'],
             'description' => $validated['description'] ?? null,
             'type' => $validated['type'],
             'cover' => $coverPath,
@@ -139,6 +141,7 @@ class UploaderPortalApiController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'original_author' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'type' => ['required', 'in:comic,novel'],
             'genre_ids' => ['required', 'array', 'min:1'],
@@ -152,6 +155,7 @@ class UploaderPortalApiController extends Controller
 
         $work->fill([
             'title' => $validated['title'],
+            'original_author' => $validated['original_author'],
             'description' => $validated['description'] ?? null,
             'type' => $validated['type'],
         ]);

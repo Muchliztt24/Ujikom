@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('content')
     <div class="content-header">
@@ -32,7 +32,8 @@
                     <div style="display: grid; gap: 10px; font-size: 14px; color: var(--admin-text);">
                         <div><strong>Status:</strong> {{ ucfirst($work->status) }}</div>
                         <div><strong>Tipe:</strong> {{ ucfirst($work->type) }}</div>
-                        <div><strong>Author:</strong> {{ $work->user->name }}</div>
+                        <div><strong>Author Asli:</strong> {{ $work->display_author }}</div>
+                        <div><strong>Uploader:</strong> {{ $work->user->name }}</div>
                         <div><strong>Email:</strong> {{ $work->user->email }}</div>
                         <div><strong>Genre:</strong> {{ $work->genres->pluck('name')->implode(', ') ?: '-' }}</div>
                         <div><strong>Total Chapter:</strong> {{ $work->chapters->count() }}</div>
@@ -90,5 +91,6 @@
         }
     </style>
 @endsection
+
 
 

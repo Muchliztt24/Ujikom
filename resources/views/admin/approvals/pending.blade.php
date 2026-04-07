@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('content')
     <div class="content-header">
@@ -28,8 +28,9 @@
                             <div>
                                 <span class="admin-chip warning" style="margin-bottom:10px;">Pending</span>
                                 <div class="admin-form-title" style="margin-bottom:6px;">{{ $work->title }}</div>
-                                <div class="admin-muted">Author: {{ $work->user->name }}</div>
-                                <div class="admin-muted">{{ ucfirst($work->type) }} � {{ $work->chapters_count }} chapter</div>
+                                            <div class="admin-muted">Author Asli: {{ $work->display_author }}</div>
+                                            <div class="admin-muted">Uploader: {{ $work->user->name }}</div>
+                                <div class="admin-muted">{{ ucfirst($work->type) }} • {{ $work->chapters_count }} chapter</div>
                             </div>
                             @if ($work->genres->count())
                                 <div style="display:flex; flex-wrap:wrap; gap:8px;">
@@ -53,6 +54,7 @@
         @endif
     </div>
 @endsection
+
 
 
 

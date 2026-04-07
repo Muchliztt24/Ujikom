@@ -23,10 +23,15 @@ class User extends Authenticatable
     
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'role_id',
         'avatar',
+        'bio',
+        'profile_visibility',
+        'email_notifications',
+        'reading_history_visible',
         'google_id',
         'facebook_id',
         'x_id',
@@ -68,6 +73,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'avatar_url',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -78,6 +87,21 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'email_notifications' => 'boolean',
+            'reading_history_visible' => 'boolean',
         ];
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (! $this->avatar) {
+            return null;
+        }
+
+        if (str_starts_with($this->avatar, 'http://') || str_starts_with($this->avatar, 'https://')) {
+            return $this->avatar;
+        }
+
+        return asset('storage/'.$this->avatar);
     }
 }

@@ -77,13 +77,15 @@ trait FormatsApiPayloads
         $payload = [
             'id' => $work->id,
             'title' => $work->title,
+            'original_author' => $work->original_author,
             'description' => $work->description,
             'type' => $work->type,
             'status' => $work->status,
             'cover_path' => $work->cover,
             'cover_url' => $this->makePublicUrl($work->cover),
             'user_id' => $work->user_id,
-            'author' => $work->user?->name,
+            'author' => $work->display_author,
+            'uploader' => $work->user?->name,
             'author_detail' => $work->user ? $this->userPayload($work->user, false) : null,
             'genres' => $work->relationLoaded('genres')
                 ? $work->genres->pluck('name')->values()
