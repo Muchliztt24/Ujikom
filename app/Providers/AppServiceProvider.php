@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Genre;
+use App\Support\SocialAuth;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Discord\DiscordExtendSocialite;
@@ -20,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Event::listen(SocialiteWasCalled::class, DiscordExtendSocialite::class.'@handle');
 
-        $genres = Genre::query()->orderBy('name')->get();
+        $genres = Schema::hasTable('genres')
+            ? Genre::query()->orderBy('name')->get()
+            : collect();
+
         View::share('globalGenres', $genres);
     }
 }

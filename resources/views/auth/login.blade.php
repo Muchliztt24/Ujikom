@@ -392,6 +392,12 @@
                 </div>
             @endif
 
+            @php
+                $enabledSocialProviders = collect(\App\Support\SocialAuth::providersForView('auth.social.redirect'))
+                    ->where('enabled', true)
+                    ->values();
+            @endphp
+
             <form method="POST" action="{{ route('login') }}">
                 @csrf
 
@@ -433,15 +439,18 @@
                 <button type="submit" class="submit-btn">Masuk</button>
             </form>
 
-            <div class="divider">atau masuk dengan</div>
+            @if ($enabledSocialProviders->isNotEmpty())
+                <div class="divider">atau masuk dengan</div>
 
-            <div class="social-grid">
-                <a href="{{ route('api.auth.social.redirect', 'google') }}" class="social-btn google"><i class="bi bi-google"></i><span>Google</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'facebook') }}" class="social-btn facebook"><i class="bi bi-facebook"></i><span>Facebook</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'x') }}" class="social-btn x"><i class="bi bi-twitter-x"></i><span>X</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'discord') }}" class="social-btn discord"><i class="bi bi-discord"></i><span>Discord</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'github') }}" class="social-btn github" style="grid-column: 1 / -1;"><i class="bi bi-github"></i><span>GitHub</span></a>
-            </div>
+                <div class="social-grid">
+                    @foreach ($enabledSocialProviders as $provider)
+                        <a href="{{ $provider['url'] }}" class="social-btn {{ $provider['class'] }}" @if ($provider['label'] === 'GitHub' && $enabledSocialProviders->count() % 2 === 1) style="grid-column: 1 / -1;" @endif>
+                            <i class="bi {{ $provider['icon'] }}"></i>
+                            <span>{{ $provider['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
 
             @if (Route::has('register'))
                 <div class="switch-link">Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></div>

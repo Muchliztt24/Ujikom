@@ -404,6 +404,12 @@
                 </div>
             @endif
 
+            @php
+                $enabledSocialProviders = collect(\App\Support\SocialAuth::providersForView('auth.social.redirect'))
+                    ->where('enabled', true)
+                    ->values();
+            @endphp
+
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
@@ -473,15 +479,18 @@
                 <button type="submit" class="submit-btn">Daftar Sekarang</button>
             </form>
 
-            <div class="divider">atau daftar dengan</div>
+            @if ($enabledSocialProviders->isNotEmpty())
+                <div class="divider">atau daftar dengan</div>
 
-            <div class="social-grid">
-                <a href="{{ route('api.auth.social.redirect', 'google') }}" class="social-btn google"><i class="bi bi-google"></i><span>Google</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'facebook') }}" class="social-btn facebook"><i class="bi bi-facebook"></i><span>Facebook</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'x') }}" class="social-btn x"><i class="bi bi-twitter-x"></i><span>X</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'discord') }}" class="social-btn discord"><i class="bi bi-discord"></i><span>Discord</span></a>
-                <a href="{{ route('api.auth.social.redirect', 'github') }}" class="social-btn github"><i class="bi bi-github"></i><span>GitHub</span></a>
-            </div>
+                <div class="social-grid">
+                    @foreach ($enabledSocialProviders as $provider)
+                        <a href="{{ $provider['url'] }}" class="social-btn {{ $provider['class'] }}">
+                            <i class="bi {{ $provider['icon'] }}"></i>
+                            <span>{{ $provider['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
 
             @if (Route::has('login'))
                 <div class="switch-link">Sudah punya akun? <a href="{{ route('login') }}">Masuk di sini</a></div>

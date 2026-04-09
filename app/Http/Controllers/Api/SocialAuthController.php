@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use App\Support\SocialAuth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,15 +20,13 @@ use Throwable;
 
 class SocialAuthController extends Controller
 {
-    private const PROVIDERS = ['google', 'facebook', 'x', 'discord', 'github'];
-
     public function providers(): JsonResponse
     {
         return response()->json([
-            'data' => collect(self::PROVIDERS)->map(function (string $provider) {
+            'data' => collect(SocialAuth::names())->map(function (string $provider) {
                 return [
                     'provider' => $provider,
-                    'enabled' => $this->isProviderConfigured($provider),
+                    'enabled' => SocialAuth::isConfigured($provider),
                     'redirect_url' => route('api.auth.social.redirect', $provider),
                     'token_login_url' => route('api.auth.social.token', $provider),
                 ];
@@ -198,29 +197,16 @@ class SocialAuthController extends Controller
 
     private function ensureProviderIsSupported(string $provider): void
     {
-        abort_unless(in_array($provider, self::PROVIDERS, true), 404);
+        abort_unless(in_array($provider, SocialAuth::names(), true), 404);
     }
 
     private function ensureProviderIsConfigured(string $provider): void
     {
-        abort_unless($this->isProviderConfigured($provider), 503, 'Provider belum dikonfigurasi di .env.');
-    }
-
-    private function isProviderConfigured(string $provider): bool
-    {
-        return filled(config("services.{$provider}.client_id"))
-            && filled(config("services.{$provider}.client_secret"))
-            && filled(config("services.{$provider}.redirect"));
+        abort_unless(SocialAuth::isConfigured($provider), 503, 'Provider belum dikonfigurasi di .env.');
     }
 
     private function providerColumn(string $provider): string
     {
-        return match ($provider) {
-            'google' => 'google_id',
-            'facebook' => 'facebook_id',
-            'x' => 'x_id',
-            'discord' => 'discord_id',
-            'github' => 'github_id',
-        };
+        return SocialAuth::providerColumn($provider);
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\{WorkController, ChapterController, ChapterImageController, BookmarkController, CommentController, GenreController, ProfileController, PageController};
+use App\Http\Controllers\Auth\SocialLoginController;
 
 use App\Http\Controllers\Admin\{WorkApprovalController, UserController, AdminWorkController, AdminChapterController, AdminChapterImageController};
 
@@ -17,6 +18,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/{provider}/redirect', [SocialLoginController::class, 'redirect'])->name('auth.social.redirect');
+    Route::get('/auth/{provider}/callback', [SocialLoginController::class, 'callback'])->name('auth.social.callback');
+});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/faq', [PageController::class, 'faq'])->name('pages.faq');
