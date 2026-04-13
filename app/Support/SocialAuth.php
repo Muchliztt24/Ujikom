@@ -16,30 +16,6 @@ class SocialAuth
                 'icon' => 'bi-google',
                 'class' => 'google',
             ],
-            [
-                'name' => 'facebook',
-                'label' => 'Facebook',
-                'icon' => 'bi-facebook',
-                'class' => 'facebook',
-            ],
-            [
-                'name' => 'x',
-                'label' => 'X',
-                'icon' => 'bi-twitter-x',
-                'class' => 'x',
-            ],
-            [
-                'name' => 'discord',
-                'label' => 'Discord',
-                'icon' => 'bi-discord',
-                'class' => 'discord',
-            ],
-            [
-                'name' => 'github',
-                'label' => 'GitHub',
-                'icon' => 'bi-github',
-                'class' => 'github',
-            ],
         ];
     }
 
@@ -77,10 +53,6 @@ class SocialAuth
     {
         return match ($provider) {
             'google' => 'google_id',
-            'facebook' => 'facebook_id',
-            'x' => 'x_id',
-            'discord' => 'discord_id',
-            'github' => 'github_id',
             default => throw new \InvalidArgumentException("Unsupported provider [{$provider}]."),
         };
     }
