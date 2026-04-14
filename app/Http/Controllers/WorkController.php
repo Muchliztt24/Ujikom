@@ -218,15 +218,17 @@ class WorkController extends Controller
     {
         abort_if($work->status !== 'approved', 404);
 
+        $sort = request('sort') === 'asc' ? 'asc' : 'desc';
+
         $work->load([
             'genres',
             'user',
-            'chapters.comments.user',
         ]);
 
         $readingHistory = null;
         $bookmark = null;
         $continueChapter = null;
+        $chaptersCount = $work->chapters()->count();
 
         if (Auth::check()) {
             $readingHistory = ReadingHistory::with('chapter')
@@ -241,23 +243,37 @@ class WorkController extends Controller
             $continueChapter = $readingHistory?->chapter;
 
             if (!$continueChapter && $bookmark?->last_chapter_read) {
-                $continueChapter = $work->chapters
-                    ->firstWhere('chapter_number', $bookmark->last_chapter_read);
+                $continueChapter = $work->chapters()
+                    ->select(['id', 'work_id', 'chapter_number', 'title'])
+                    ->where('chapter_number', $bookmark->last_chapter_read)
+                    ->first();
             }
         }
 
-        $recentComments = $work->chapters
-            ->flatMap(function ($chapter) {
-                return $chapter->comments->map(function ($comment) use ($chapter) {
-                    $comment->setRelation('chapter', $chapter);
-                    return $comment;
-                });
-            })
-            ->sortByDesc('created_at')
-            ->take(8)
-            ->values();
+        $chapters = $work->chapters()
+            ->select(['id', 'work_id', 'chapter_number', 'title', 'created_at'])
+            ->orderBy('chapter_number', $sort)
+            ->paginate(60)
+            ->withQueryString();
 
-        return view('works.public.show', compact('work', 'bookmark', 'continueChapter', 'recentComments'));
+        $recentComments = \App\Models\Comment::query()
+            ->with(['user:id,name', 'chapter:id,work_id,chapter_number,title'])
+            ->whereHas('chapter', function ($query) use ($work) {
+                $query->where('work_id', $work->id);
+            })
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('works.public.show', compact(
+            'work',
+            'bookmark',
+            'continueChapter',
+            'recentComments',
+            'chapters',
+            'chaptersCount',
+            'sort'
+        ));
     }
 
     public function read(Work $work)
